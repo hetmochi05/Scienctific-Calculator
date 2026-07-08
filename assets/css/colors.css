@@ -1,0 +1,19 @@
+/* ==========================================================
+   colors.css
+   Root color variables — single source of truth for the
+   calculator's color palette. Edit values here to re-theme
+   the whole app.
+   ========================================================== */
+
+:root {
+    --bg: #181a20;
+    --panel: #1f2128;
+    --panel2: #252830;
+    --btn: #2f323b;
+    --btn-hover: #3b3f49;
+    --text: #fff;
+    --muted: #9aa0aa;
+    --accent: #ff9800;
+    --radius: 20px;
+}
+
