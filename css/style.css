@@ -1,0 +1,518 @@
+/* ==========================================================
+   style.css
+   Windows Style Scientific Calculator
+   Generated starter stylesheet
+   ========================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --bg: #181a20;
+    --panel: #1f2128;
+    --panel2: #252830;
+    --btn: #2f323b;
+    --btn-hover: #3b3f49;
+    --text: #fff;
+    --muted: #9aa0aa;
+    --accent: #ff9800;
+    --radius: 20px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 10px;
+    overflow: hidden;
+    background: radial-gradient(circle at top, #40485b, #1b1d24 70%);
+}
+
+.window {
+    width: min(98vw, 1800px);
+    height: calc(100vh - 20px);
+    background: linear-gradient(#22242b, #17191e);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .08);
+    box-shadow: 0 25px 70px rgba(0, 0, 0, .6);
+    display: flex;
+    flex-direction: column;
+    transition: .35s ease; /* BUGFIX: moved from :hover so it animates both in and out */
+}
+
+.window:hover{
+    transform:translateY(-2px);
+}
+
+.title-bar {
+    height: 68px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, .06);
+}
+
+.title-left {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    font-size: 22px
+}
+
+.title-left i {
+    color: var(--accent)
+}
+
+.title-right {
+    display: flex;
+    gap: 8px
+}
+
+.title-right button {
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+}
+
+.title-right button:hover,
+.title-right button:active {
+    background: #333
+}
+
+.calculator {
+    flex: 1;
+    min-height: 0; /* BUGFIX: without this the whole grid row can inflate past .window's height */
+    display: grid;
+    /* grid-template-columns:320px 1fr; */
+    grid-template-columns: minmax(280px, 320px) 1fr;
+    gap: 22px;
+    padding: 20px;
+}
+
+.history {
+    background: linear-gradient(#222, #1a1a1a);
+    border-radius: 22px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;   /* BUGFIX: without this, a full history list forces this box to grow */
+    overflow: hidden; /* BUGFIX: clip anything that still tries to overflow the panel */
+}
+
+.history-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px
+}
+
+.history-tabs button,
+.clear-history {
+    border: none;
+    background: #2b2b2b;
+    color: #ddd;
+    border-radius: 14px;
+    height: 46px;
+    cursor: pointer;
+}
+
+.history-tabs button {
+    flex: 1
+}
+
+.history-tabs .active {
+    color: var(--accent)
+}
+
+.history-list {
+    flex: 1;
+    overflow: auto;
+    margin: 18px 0;
+    min-height: 0; /* BUGFIX: this is the key line — lets the list shrink so overflow:auto actually scrolls */
+    scrollbar-width:thin;
+    scrollbar-color:#666 transparent;
+}
+
+.history-item {
+    background: #2b2b2b;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    transition: .25s;
+    cursor: pointer; /* small enhancement: history items are clickable */
+}
+
+.history-item:hover,
+.history-item:active {
+    background: #353535;
+    transform: translateX(4px);
+}
+
+.history-item small {
+    color: var(--muted)
+}
+
+.history-item h2 {
+    margin-top: 6px;
+    font-weight: 500
+}
+
+.history-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--muted);
+    gap: 12px;
+    text-align: center;
+}
+
+.history-empty i {
+    font-size: 32px;
+    opacity: .5;
+}
+
+.history-empty p {
+    font-size: 15px;
+}
+
+.right-panel {
+    display: grid;
+    grid-template-rows: 240px 1fr;
+    gap: 20px;
+    min-height: 0; /* BUGFIX: lets this panel respect the space .calculator actually gives it */
+}
+
+.display {
+    background: #101113;
+    border-radius: 24px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: stretch; /* BUGFIX: was flex-end — children need full width to truncate correctly */
+    min-height: 0; /* BUGFIX: keeps this locked to its grid row height, even with long content */
+    overflow: hidden;
+}
+
+.expression {
+    color: var(--muted);
+    font-size: 32px;
+    text-align: right;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.result {
+    font-size: 84px;
+    font-weight: 300;
+    text-align: right;
+    width: 100%;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    color: #fff;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(5, 1fr); /* BUGFIX: rows now share available space instead of each demanding a fixed 74px */
+    gap: 14px;
+    min-height: 0; /* BUGFIX: allow this grid to shrink to fit .right-panel's actual row height */
+}
+
+.zero {
+    grid-column: 7/span 2
+}
+
+.buttons button {
+    border: none;
+    border-radius: 18px;
+    background: linear-gradient(#363944, #2d3038);
+    color: #fff;
+    min-height: 44px; /* BUGFIX: was a fixed height:74px — now buttons stretch to fill their fr row, with this as a floor */
+    font-size: 24px;
+    cursor: pointer;
+    transition: background 0.25s ease, transform 0.25s ease; /* BUGFIX: valid shorthand */
+    box-shadow: inset 0 1px rgba(255, 255, 255, .08), 0 6px 12px rgba(0, 0, 0, .2);
+}
+
+.buttons button:hover,
+.buttons button:active {
+    background: linear-gradient(#404450, #363944);
+}
+
+.buttons button:hover {
+    transform: translateY(-2px);
+}
+
+.buttons button:active {
+    transform: scale(.96);
+}
+
+button:focus-visible{
+
+    outline:2px solid var(--accent);
+
+    outline-offset:3px;
+}
+
+.operator {
+    background: linear-gradient(#ffb63a, #ff9800) !important;
+    color: #fff;
+    font-size: 30px !important;
+    font-weight: 600;
+}
+
+.operator:hover,
+.operator:active {
+    box-shadow:
+        0 0 18px rgba(255,152,0,.35),
+        0 8px 18px rgba(255,152,0,.25);
+}
+
+/* Small addition: visible feedback for the "2nd" (inverse trig) toggle button */
+.active-second {
+    color: var(--accent) !important;
+    box-shadow: 0 0 0 2px var(--accent) inset;
+}
+
+::-webkit-scrollbar {
+    width: 8px
+}
+
+::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 10px
+}
+
+::-webkit-scrollbar-track {
+    background: #222
+}
+
+/* Mobile drawer controls — hidden on desktop, shown only in the mobile breakpoint below */
+.mobile-history-toggle {
+    display: none;
+}
+
+.history-close {
+    display: none;
+}
+
+.history-backdrop {
+    display: none;
+}
+
+@media (max-width:1200px) {
+    .calculator {
+        grid-template-columns: 1fr
+    }
+
+    .history {
+        display: none
+    }
+
+    .window {
+        height: auto
+    }
+}
+
+/* ===================== Mobile: shared structural rules =====================
+   Applies whenever we're in "mobile app" mode — either a narrow portrait
+   phone, or a short landscape phone. Handles the fullscreen window,
+   history drawer (now slides from the LEFT), and backdrop. */
+@media (max-width:768px), (orientation:landscape) and (max-height:600px) {
+    body {
+        padding: 0;
+        align-items: stretch;
+    }
+
+    .window {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+    }
+
+    .calculator {
+        grid-template-columns: 1fr;
+        padding: 14px;
+        gap: 14px;
+    }
+
+    .title-right button {
+        display: none;
+    }
+
+    .mobile-history-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border: none;
+        border-radius: 10px;
+        background: transparent;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    /* History becomes a slide-in drawer from the LEFT, instead of a fixed side panel */
+    .history {
+        display: flex;
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 85%;
+        max-width: 360px;
+        height: 100%;
+        z-index: 60;
+        border-radius: 0;
+        box-shadow: 12px 0 40px rgba(0, 0, 0, .5);
+        transition: left .3s ease;
+    }
+
+    .history.history-open {
+        left: 0;
+    }
+
+    .history-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, .5);
+        z-index: 55;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .3s ease;
+    }
+
+    .history-backdrop.visible {
+        display: block;
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .history-close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: flex-end;
+        width: 36px;
+        height: 36px;
+        border: none;
+        border-radius: 10px;
+        background: #2b2b2b;
+        color: #fff;
+        margin-bottom: 10px;
+        cursor: pointer;
+    }
+
+    .mode-toggle-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border: none;
+        border-radius: 10px;
+        background: transparent;
+        color: var(--accent);
+        cursor: pointer;
+    }
+
+    .zero {
+        grid-column: auto
+    }
+
+    .display {
+        padding: 20px;
+    }
+
+    .expression {
+        font-size: 20px;
+    }
+
+    .result {
+        font-size: 48px
+    }
+}
+
+/* ===================== Basic mode (mobile) =====================
+   Applied when JS sets body[data-calc-mode="basic"] — either because the
+   phone is in portrait (auto-detected) or the user manually tapped the
+   mode-toggle button. Hides every scientific-only key, leaving just
+   digits, +-×÷=, %, +/-, AC, parentheses, and backspace. */
+@media (max-width:768px), (orientation:landscape) and (max-height:600px) {
+    body[data-calc-mode="basic"] .sci-only {
+        display: none;
+    }
+
+    body[data-calc-mode="basic"] .right-panel {
+        grid-template-rows: 150px 1fr; /* BUGFIX: fixed height so long expressions/results can never grow this row */
+    }
+
+    body[data-calc-mode="basic"] .buttons {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: none;
+        grid-auto-rows: 1fr;
+        gap: 12px;
+        min-height: 0;
+    }
+
+    body[data-calc-mode="basic"] .buttons button {
+        border-radius: 50%;
+        font-size: 22px;
+        min-height: 0;
+    }
+
+    /* ===================== Scientific mode (mobile) =====================
+       Applied when body[data-calc-mode="scientific"] — landscape auto-detect
+       or manual toggle. Shows all 50 keys, packed tighter since there's less
+       room per key than the 4-column Basic layout. */
+    body[data-calc-mode="scientific"] .right-panel {
+        grid-template-rows: 80px 1fr; /* BUGFIX: fixed height, same reasoning — was "auto" and could grow */
+    }
+
+    body[data-calc-mode="scientific"] .buttons {
+        grid-template-columns: repeat(8, 1fr);
+        grid-template-rows: none;
+        grid-auto-rows: 1fr;
+        gap: 8px;
+        min-height: 0;
+    }
+
+    body[data-calc-mode="scientific"] .buttons button {
+        border-radius: 14px;
+        font-size: 15px;
+        min-height: 0;
+    }
+
+    body[data-calc-mode="scientific"] .display {
+        padding: 12px 20px;
+    }
+
+    body[data-calc-mode="scientific"] .expression {
+        font-size: 16px;
+    }
+
+    body[data-calc-mode="scientific"] .result {
+        font-size: 32px;
+    }
+}
