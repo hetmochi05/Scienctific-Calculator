@@ -6,9 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scientific Calculator</title>
 
-    <!-- favicon -->
-    <link rel="icon" type="image/png" href="assets/favicon/favicon.png">
-
     <!-- CSS (order matters: colors first, then base, then responsive overrides last) -->
     <link rel="stylesheet" href="assets/css/colors.css">
     <link rel="stylesheet" href="assets/css/style.css">
@@ -18,7 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 
-<body>  
+<body>
 
     <div class="window">
 
@@ -28,19 +25,15 @@
 
         <header class="title-bar">
 
-            <div class="title-left ">
+            <div class="title-left">
                 <button type="button" class="mobile-history-toggle" aria-label="Show history">
                     <i class="fa-regular fa-clock"></i>
                 </button>
                 <button type="button" class="mode-toggle-btn" aria-label="Switch to Scientific mode">
                     <i class="fa-solid fa-square-root-variable"></i>
                 </button>
-
-                <div class="title-text">    
-                    <i class="fa-solid fa-calculator"></i>
-                    <span>Calculator</span>
-                </div>
-            
+                <i class="fa-solid fa-calculator"></i>
+                <span>Calculator</span>
             </div>
 
             <div class="title-right">
@@ -70,14 +63,14 @@
                         History
                     </button>
 
-                    <!-- <button type="button">
+                    <button type="button">
                         <i class="fa-regular fa-hard-drive"></i>
                         Memory
-                    </button> -->
+                    </button>
 
                 </div>
 
-                <!-- <h3>Today</h3> -->
+                <h3>Today</h3>
 
                 <div class="history-list">
                     <!-- populated dynamically by app.js (renderHistory) -->
@@ -187,6 +180,11 @@
 
     </div>
 
+    <script src="assets/js/calculator-engine.js"></script>
+    <script src="assets/js/display.js"></script>
+    <script src="assets/js/ui-controls.js"></script>
+    <script src="assets/js/keyboard.js"></script>
+    <script src="assets/js/mobile.js"></script>
     <script src="assets/js/app.js"></script>
 
 </body>

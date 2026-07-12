@@ -29,8 +29,7 @@ body {
 .window {
     width: min(98vw, 1800px);
     height: calc(100vh - 20px);
-    /* background: linear-gradient(#22242b, #17191e); */
-    background: var(--bg);
+    background: linear-gradient(#22242b, #17191e);
     border-radius: 20px;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, .08);
@@ -64,15 +63,6 @@ body {
     color: var(--accent)
 }
 
-.title-bar .title-text {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    padding: 6px 12px;
-    font-size: 22px;
-    color: var(--text);
-}
-
 .title-right {
     display: flex;
     gap: 8px
@@ -81,30 +71,30 @@ body {
 .title-right button {
     width: 42px;
     height: 42px;
-    border: 1px solid rgba(255, 255, 255, .08);
+    border: none;
     border-radius: 10px;
     background: transparent;
-    color: var(--text);
+    color: #fff;
     cursor: pointer;
 }
 
 .title-right button:hover,
 .title-right button:active {
-    background: var(--panel2)
+    background: #333
 }
 
 .calculator {
     flex: 1;
-    min-height: 0; 
+    min-height: 0; /* BUGFIX: without this the whole grid row can inflate past .window's height */
     display: grid;
+    /* grid-template-columns:320px 1fr; */
     grid-template-columns: minmax(280px, 320px) 1fr;
     gap: 22px;
     padding: 20px;
 }
 
 .history {
-    /* background: linear-gradient(#222, #1a1a1a); */
-    background: var(--panel); 
+    background: linear-gradient(#222, #1a1a1a);
     border-radius: 22px;
     padding: 18px;
     display: flex;
@@ -122,8 +112,8 @@ body {
 .history-tabs button,
 .clear-history {
     border: none;
-    background: var(--panel2);
-    color: var(--text);
+    background: #2b2b2b;
+    color: #ddd;
     border-radius: 14px;
     height: 46px;
     cursor: pointer;
@@ -131,10 +121,6 @@ body {
 
 .history-tabs button {
     flex: 1
-}
-
-.clear-history {
-    background: linear-gradient(#363944, #2d3038);  
 }
 
 .history-tabs .active {
@@ -151,7 +137,7 @@ body {
 }
 
 .history-item {
-    background: var(--panel2);
+    background: #2b2b2b;
     border-radius: 16px;
     padding: 16px;
     margin-bottom: 12px;
@@ -161,7 +147,7 @@ body {
 
 .history-item:hover,
 .history-item:active {
-    background: var(--accent);
+    background: #353535;
     transform: translateX(4px);
 }
 
@@ -198,7 +184,7 @@ body {
     display: grid;
     grid-template-rows: 240px 1fr;
     gap: 20px;
-    min-height: 0;
+    min-height: 0; /* BUGFIX: lets this panel respect the space .calculator actually gives it */
 }
 
 .display {
@@ -208,8 +194,9 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    align-items: stretch; 
-    min-height: 0; 
+    align-items: stretch; /* BUGFIX: was flex-end — children need full width to truncate correctly */
+    min-height: 0; /* BUGFIX: keeps this locked to its grid row height, even with long content */
+    overflow: hidden;
 }
 
 .expression {
@@ -230,7 +217,19 @@ body {
     overflow:hidden;
     white-space:nowrap;
     text-overflow:ellipsis;
-    color: var(--text);
+    color: #fff;
+    transition: color .15s ease;
+}
+
+.result.input-error {
+    color: #ff5252;
+    animation: calc-shake .3s ease;
+}
+
+@keyframes calc-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
 }
 
 .buttons {
@@ -238,7 +237,8 @@ body {
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(5, 1fr); /* BUGFIX: rows now share available space instead of each demanding a fixed 74px */
     gap: 14px;
-    min-height: 0; }
+    min-height: 0; /* BUGFIX: allow this grid to shrink to fit .right-panel's actual row height */
+}
 
 .zero {
     grid-column: 7/span 2
@@ -248,8 +248,8 @@ body {
     border: none;
     border-radius: 18px;
     background: linear-gradient(#363944, #2d3038);
-    color: var(--text);
-    min-height: 44px;
+    color: #fff;
+    min-height: 44px; /* BUGFIX: was a fixed height:74px — now buttons stretch to fill their fr row, with this as a floor */
     font-size: 24px;
     cursor: pointer;
     transition: background 0.25s ease, transform 0.25s ease; /* BUGFIX: valid shorthand */
@@ -270,7 +270,9 @@ body {
 }
 
 button:focus-visible{
+
     outline:2px solid var(--accent);
+
     outline-offset:3px;
 }
 
@@ -305,8 +307,4 @@ button:focus-visible{
 
 ::-webkit-scrollbar-track {
     background: #222
-}
-
-.mobile-history-toggle {
-    display: none; /* this button is only visible on mobile */
 }

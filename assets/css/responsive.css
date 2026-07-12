@@ -11,10 +11,6 @@
     display: none;
 }
 
-.mode-toggle-btn{
-    display: none;
-}
-
 .history-close {
     display: none;
 }
@@ -58,10 +54,6 @@
         grid-template-columns: 1fr;
         padding: 14px;
         gap: 14px;
-    }
-    
-    .title-bar {
-        visibility: hidden;
     }
 
     .title-right button {
