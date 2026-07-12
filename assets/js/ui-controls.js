@@ -51,6 +51,12 @@ function appendValue(value) {
     if (justCalculated && !CALC_OPERATORS.includes(value)) {
         currentValue = "0";
         justCalculated = false;
+    } else if (justCalculated && CALC_OPERATORS.includes(value)) {
+        // Continuing from a fresh result (e.g. after "=" or picking a
+        // history item) with an operator — keep the number, just stop
+        // treating it as "fresh" so the next digit appends instead of
+        // wiping the operator back out.
+        justCalculated = false;
     }
 
     // Prevent starting with an operator (except "-")
@@ -67,12 +73,19 @@ function appendValue(value) {
         }
 
         if (CALC_OPERATORS.includes(lastChar)) {
+            // The full run of operator chars at the end (e.g. "+", or "+-"
+            // if a negative number was started). Always replace the whole
+            // run, not just the last character, so a stranded leading
+            // operator can't survive multiple quick operator switches.
+            const trailingRun = currentValue.match(/[+\-*/^#]+$/)[0];
+
             if (value === "-" && lastChar !== "-") {
+                // Extend the run to start typing a negative number, e.g. "8+" -> "8+-"
                 currentValue += "-";
                 renderResult(currentValue);
                 return;
             }
-            currentValue = currentValue.slice(0, -1) + value;
+            currentValue = currentValue.slice(0, currentValue.length - trailingRun.length) + value;
             renderResult(currentValue);
             return;
         }

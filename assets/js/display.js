@@ -15,10 +15,26 @@ let calcHistory = [];
 
 // Cosmetic-only: swap raw operators for nicer-looking symbols on screen.
 function prettifyExpr(str) {
-    return str
+    let out = str
         .replace(/\*/g, '×')
-        .replace(/\//g, '÷')
-        .replace(/(?<=[0-9)])-/g, '−'); // only binary minus, keep leading "-" as-is for typing
+        .replace(/\//g, '÷');
+
+    // A bare negative number on its own -- e.g. a calculated result like
+    // "-2" -- stays plain. Only wrap negatives that appear as part of a
+    // bigger expression, e.g. "8+-6" -> "8+(-6)" or "-5+3" -> "(-5)+3".
+    const isBareNegativeNumber = /^-(\d+\.?\d*|\.\d+)$/.test(str);
+
+    if (!isBareNegativeNumber) {
+        out = out.replace(/(^|[+\-×÷^#(])-(\d+\.?\d*|\.\d+)/g, (match, prefix, num) => {
+            return `${prefix}(-${num})`;
+        });
+    }
+
+    // Any "-" left over at this point is a real binary subtraction
+    // operator (preceded by a digit or closing paren) — show it as "−".
+    out = out.replace(/(?<=[0-9)])-/g, '−');
+
+    return out;
 }
 
 function renderResult(rawStr) {
