@@ -5,9 +5,13 @@
    overrides the desktop rules from style.css.
    ========================================================== */
 
-/* Mobile drawer controls — hidden on desktop by default,
+/* Mobile drawer + mode-toggle controls — hidden on desktop by default,
    shown only once we're inside the mobile breakpoint below */
 .mobile-history-toggle {
+    display: none;
+}
+
+.mode-toggle-btn {
     display: none;
 }
 

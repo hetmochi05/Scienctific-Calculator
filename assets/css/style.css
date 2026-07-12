@@ -65,7 +65,8 @@ body {
 
 .title-right {
     display: flex;
-    gap: 8px
+    gap: 8px;
+    
 }
 
 .title-right button {
@@ -74,7 +75,8 @@ body {
     border: none;
     border-radius: 10px;
     background: transparent;
-    color: #fff;
+    color: var(--accent);
+    font-size: 20px;
     cursor: pointer;
 }
 
@@ -137,9 +139,10 @@ body {
 }
 
 .history-item {
+    position: relative;
     background: #2b2b2b;
     border-radius: 16px;
-    padding: 16px;
+    padding: 16px 40px 16px 16px;
     margin-bottom: 12px;
     transition: .25s;
     cursor: pointer; /* small enhancement: history items are clickable */
@@ -158,6 +161,37 @@ body {
 .history-item h2 {
     margin-top: 6px;
     font-weight: 500
+}
+
+.history-item-delete {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+    opacity: .55; /* always visible (not hover-only) so it's reachable on touch/mobile */
+    transition: opacity .15s ease, background .15s ease, color .15s ease;
+}
+
+.history-item:hover .history-item-delete {
+    opacity: 1;
+}
+
+.history-item-delete:hover,
+.history-item-delete:active {
+    opacity: 1;
+    background: rgba(255, 82, 82, .15);
+    color: #ff5252;
 }
 
 .history-empty {

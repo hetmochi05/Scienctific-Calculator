@@ -33,13 +33,13 @@
                     <i class="fa-solid fa-square-root-variable"></i>
                 </button>
                 <i class="fa-solid fa-calculator"></i>
-                <span>Calculator</span>
+                <span><b>CALCULATOR</b></span>
             </div>
 
             <div class="title-right">
-                <button><i class="fa-solid fa-minus"></i></button>
-                <button><i class="fa-regular fa-square"></i></button>
-                <button><i class="fa-solid fa-xmark"></i></button>
+                <button type="button" aria-label="Standard calculator"><i class="fa-solid fa-calculator"></i></button>
+                <button type="button" aria-label="Currency calculator"><i class="fa-solid fa-money-bill-transfer"></i></button>
+                <button type="button" aria-label="Age calculator"><i class="fa-solid fa-cake-candles"></i></button>
             </div>
 
         </header>
@@ -158,7 +158,7 @@
 
                     <!-- Row 5 -->
 
-                    <button type="button" class="sci-only">
+                    <button type="button" id="inlineModeToggle" class="sci-only" aria-label="Switch to Basic mode">
                         <i class="fa-solid fa-calculator"></i>
                     </button>
 

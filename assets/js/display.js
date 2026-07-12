@@ -66,10 +66,20 @@ function renderHistory() {
         return;
     }
 
-    calcHistory.forEach(item => {
+    calcHistory.forEach((item, index) => {
         const div = document.createElement('div');
         div.className = 'history-item';
-        div.innerHTML = `<small>${item.expr}</small><h2>${item.result}</h2>`;
+        div.innerHTML = `
+            <button type="button" class="history-item-delete" aria-label="Delete this entry">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+            <small>${item.expr}</small><h2>${item.result}</h2>`;
+
+        div.querySelector('.history-item-delete').addEventListener('click', (e) => {
+            e.stopPropagation(); // don't also trigger the "load into display" click below
+            deleteHistoryItem(index);
+        });
+
         div.addEventListener('click', () => {
             currentValue = item.result;
             justCalculated = true;
@@ -81,6 +91,11 @@ function renderHistory() {
         });
         historyListEl.appendChild(div);
     });
+}
+
+function deleteHistoryItem(index) {
+    calcHistory.splice(index, 1);
+    renderHistory();
 }
 
 function clearHistory() {
