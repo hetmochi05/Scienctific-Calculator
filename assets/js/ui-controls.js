@@ -118,22 +118,35 @@ function toggleSign() {
     playClick();
     if (currentValue === "0" || currentValue === "Error") return;
 
-    let exp = currentValue;
+    const expr = currentValue;
 
-    if (!/[+\-*/%^#]/.test(exp.slice(1))) {
-        currentValue = exp.startsWith("-") ? exp.slice(1) : "-" + exp;
-        renderResult(currentValue);
-        return;
+    // Find the true boundary of the number currently being toggled --
+    // same "walk backward, skip unary sign characters" logic used by
+    // applyUnary/memoryRecall -- instead of a naive string split, which
+    // can't reliably tell a sign character apart from an operator once
+    // there's more than one number in the expression.
+    let splitIndex = -1;
+    for (let i = expr.length - 1; i >= 0; i--) {
+        const ch = expr[i];
+        if ("+-*/^#".includes(ch)) {
+            const prevCh = i > 0 ? expr[i - 1] : null;
+            const isSign = ch === "-" && (prevCh === null || "+-*/^#".includes(prevCh));
+            if (!isSign) { splitIndex = i; break; }
+        }
     }
 
-    let parts = exp.split(/([+\-*/^#])/);
-    let last = parts.pop();
+    const before = splitIndex === -1 ? "" : expr.slice(0, splitIndex + 1);
+    const segment = splitIndex === -1 ? expr : expr.slice(splitIndex + 1);
 
-    if (last === "") { parts.push(last); return; }
+    if (segment === "") return; // nothing typed yet for this operand
 
-    last = last.startsWith("-") ? last.slice(1) : "-" + last;
-    parts.push(last);
-    currentValue = parts.join("");
+    // Strip ALL leading "-" characters (self-heals if a prior bug ever
+    // left more than one stacked up) and toggle based on whether there
+    // was at least one.
+    const wasNegative = segment.startsWith("-");
+    const bare = segment.replace(/^-+/, "");
+
+    currentValue = before + (wasNegative ? bare : "-" + bare);
     renderResult(currentValue);
 }
 
@@ -320,5 +333,35 @@ function memorySubtract() {
 }
 
 function memoryRecall() {
-    appendValue(String(Number(memoryValue.toFixed(8))));
+    playClick();
+    haptic("light");
+    if (currentValue === "Error") currentValue = "0";
+
+    const memStr = String(Number(memoryValue.toFixed(8)));
+
+    if (justCalculated) {
+        // Fresh result on screen (e.g. right after "=") -- MR replaces it
+        // entirely, same as typing a brand new number.
+        currentValue = memStr;
+        justCalculated = false;
+    } else {
+        // Replace whichever number is currently being typed (same segment
+        // logic as the unary functions), so "5+" + MR -> "5+7", and
+        // pressing MR again swaps in the latest value instead of
+        // concatenating digits onto whatever's already there.
+        const expr = currentValue;
+        let splitIndex = -1;
+        for (let i = expr.length - 1; i >= 0; i--) {
+            const ch = expr[i];
+            if ("+-*/^#".includes(ch)) {
+                const prevCh = i > 0 ? expr[i - 1] : null;
+                const isSign = ch === "-" && (prevCh === null || "+-*/^#".includes(prevCh));
+                if (!isSign) { splitIndex = i; break; }
+            }
+        }
+        const before = splitIndex === -1 ? "" : expr.slice(0, splitIndex + 1);
+        currentValue = before + memStr;
+    }
+
+    renderResult(currentValue);
 }

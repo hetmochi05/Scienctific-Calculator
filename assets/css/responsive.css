@@ -168,7 +168,7 @@
     }
 
     body[data-calc-mode="basic"] .right-panel {
-        grid-template-rows: 150px 1fr; /* BUGFIX: fixed height so long expressions/results can never grow this row */
+        grid-template-rows: 150px 1fr;  
     }
 
     body[data-calc-mode="basic"] .buttons {
@@ -190,8 +190,8 @@
        or manual toggle. Shows all 50 keys, packed tighter since there's less
        room per key than the 4-column Basic layout. */
     body[data-calc-mode="scientific"] .right-panel {
-        grid-template-rows: 80px 1fr; /* BUGFIX: fixed height, same reasoning — was "auto" and could grow */
-    }
+        grid-template-rows: 80px 1fr; 
+    } 
 
     body[data-calc-mode="scientific"] .buttons {
         grid-template-columns: repeat(8, 1fr);

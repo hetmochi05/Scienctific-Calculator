@@ -76,7 +76,7 @@ body {
     border-radius: 10px;
     background: transparent;
     color: var(--accent);
-    font-size: 20px;
+    font-size: 22px;
     cursor: pointer;
 }
 
@@ -87,9 +87,8 @@ body {
 
 .calculator {
     flex: 1;
-    min-height: 0; /* BUGFIX: without this the whole grid row can inflate past .window's height */
+    min-height: 0; 
     display: grid;
-    /* grid-template-columns:320px 1fr; */
     grid-template-columns: minmax(280px, 320px) 1fr;
     gap: 22px;
     padding: 20px;
@@ -101,8 +100,8 @@ body {
     padding: 18px;
     display: flex;
     flex-direction: column;
-    min-height: 0;   /* BUGFIX: without this, a full history list forces this box to grow */
-    overflow: hidden; /* BUGFIX: clip anything that still tries to overflow the panel */
+    min-height: 0;   
+    overflow: hidden; 
 }
 
 .history-tabs {
@@ -133,7 +132,7 @@ body {
     flex: 1;
     overflow: auto;
     margin: 18px 0;
-    min-height: 0; /* BUGFIX: this is the key line — lets the list shrink so overflow:auto actually scrolls */
+    min-height: 0; 
     scrollbar-width:thin;
     scrollbar-color:#666 transparent;
 }
@@ -145,7 +144,7 @@ body {
     padding: 16px 40px 16px 16px;
     margin-bottom: 12px;
     transition: .25s;
-    cursor: pointer; /* small enhancement: history items are clickable */
+    cursor: pointer; 
 }
 
 .history-item:hover,
@@ -218,7 +217,7 @@ body {
     display: grid;
     grid-template-rows: 240px 1fr;
     gap: 20px;
-    min-height: 0; /* BUGFIX: lets this panel respect the space .calculator actually gives it */
+    min-height: 0; 
 }
 
 .display {
@@ -228,8 +227,8 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    align-items: stretch; /* BUGFIX: was flex-end — children need full width to truncate correctly */
-    min-height: 0; /* BUGFIX: keeps this locked to its grid row height, even with long content */
+    align-items: stretch;  
+    min-height: 0; 
     overflow: hidden;
 }
 
@@ -269,9 +268,9 @@ body {
 .buttons {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: repeat(5, 1fr); /* BUGFIX: rows now share available space instead of each demanding a fixed 74px */
+    grid-template-rows: repeat(5, 1fr); 
     gap: 14px;
-    min-height: 0; /* BUGFIX: allow this grid to shrink to fit .right-panel's actual row height */
+    min-height: 0; 
 }
 
 .zero {
@@ -283,10 +282,10 @@ body {
     border-radius: 18px;
     background: linear-gradient(#363944, #2d3038);
     color: #fff;
-    min-height: 44px; /* BUGFIX: was a fixed height:74px — now buttons stretch to fill their fr row, with this as a floor */
+    min-height: 44px; 
     font-size: 24px;
     cursor: pointer;
-    transition: background 0.25s ease, transform 0.25s ease; /* BUGFIX: valid shorthand */
+    transition: background 0.25s ease, transform 0.25s ease; 
     box-shadow: inset 0 1px rgba(255, 255, 255, .08), 0 6px 12px rgba(0, 0, 0, .2);
 }
 
