@@ -56,11 +56,12 @@ body {
     display: flex;
     gap: 12px;
     align-items: center;
-    font-size: 22px
+    font-size: 22px;
+    color: #fff;
 }
 
 .title-left i {
-    color: var(--accent)
+    color: var(--accent);
 }
 
 .title-right {

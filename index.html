@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="assets/css/colors.css">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/responsive.css">
+    <link rel="stylesheet" href="assets/css/tools.css">
 
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
@@ -21,7 +22,9 @@
 
         <div class="history-backdrop"></div>
 
-        <!-- ================= Title Bar ================= -->
+        <!-- ================= CALCULATOR SCREEN ================= -->
+
+        <div id="calcScreen" class="screen active">
 
         <header class="title-bar">
 
@@ -33,13 +36,12 @@
                     <i class="fa-solid fa-square-root-variable"></i>
                 </button>
                 <i class="fa-solid fa-calculator"></i>
-                <span><b>CALCULATOR</b></span>
+                <span>Calculator</span>
             </div>
 
             <div class="title-right">
-                <button type="button" aria-label="Standard calculator"><i class="fa-solid fa-calculator"></i></button>
-                <button type="button" aria-label="Currency calculator"><i class="fa-solid fa-money-bill-transfer"></i></button>
-                <button type="button" aria-label="Age calculator"><i class="fa-solid fa-cake-candles"></i></button>
+                <button type="button" id="openCurrencyScreen" aria-label="Currency calculator"><i class="fa-solid fa-money-bill-transfer"></i></button>
+                <button type="button" id="openAgeScreen" aria-label="Age calculator"><i class="fa-solid fa-cake-candles"></i></button>
             </div>
 
         </header>
@@ -178,6 +180,104 @@
 
         </main>
 
+        </div>
+
+        <!-- ================= AGE CALCULATOR SCREEN ================= -->
+
+        <div id="ageScreen" class="screen tool-screen">
+
+            <header class="title-bar">
+                <div class="title-left">
+                    <i class="fa-solid fa-cake-candles"></i>
+                    <span>Age Calculator</span>
+                </div>
+                <div class="title-right">
+                    <button type="button" data-back aria-label="Back to calculator">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                </div>
+            </header>
+
+            <main class="tool-content">
+                <div class="tool-card">
+
+                    <label class="tool-label" for="ageBirthDate">Date of birth</label>
+                    <input type="date" id="ageBirthDate" class="tool-input">
+
+                    <label class="tool-label" for="ageAsOfDate">Calculate age as of</label>
+                    <input type="date" id="ageAsOfDate" class="tool-input">
+
+                    <button type="button" id="ageCalculateBtn" class="tool-primary-btn">Calculate Age</button>
+
+                    <div id="ageError" class="tool-error" hidden></div>
+
+                    <div id="ageResult" class="tool-result" hidden>
+                        <div class="tool-result-main">
+                            <span id="ageYears">0</span> years,
+                            <span id="ageMonths">0</span> months,
+                            <span id="ageDays">0</span> days
+                        </div>
+                        <div class="tool-result-sub" id="ageTotalDays"></div>
+                    </div>
+
+                </div>
+            </main>
+
+        </div>
+
+        <!-- ================= CURRENCY CALCULATOR SCREEN ================= -->
+
+        <div id="currencyScreen" class="screen tool-screen">
+
+            <header class="title-bar">
+                <div class="title-left">
+                    <i class="fa-solid fa-money-bill-transfer"></i>
+                    <span>Currency Calculator</span>
+                </div>
+                <div class="title-right">
+                    <button type="button" data-back aria-label="Back to calculator">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                </div>
+            </header>
+
+            <main class="tool-content">
+                <div class="tool-card">
+
+                    <label class="tool-label" for="currencyAmount">Amount</label>
+                    <input type="number" id="currencyAmount" class="tool-input" value="1" min="0" step="any">
+
+                    <div class="currency-row">
+                        <div class="currency-field">
+                            <label class="tool-label" for="currencyFrom">From</label>
+                            <select id="currencyFrom" class="tool-select"></select>
+                        </div>
+
+                        <button type="button" id="currencySwapBtn" class="currency-swap-btn" aria-label="Swap currencies">
+                            <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                        </button>
+
+                        <div class="currency-field">
+                            <label class="tool-label" for="currencyTo">To</label>
+                            <select id="currencyTo" class="tool-select"></select>
+                        </div>
+                    </div>
+
+                    <button type="button" id="currencyConvertBtn" class="tool-primary-btn">Convert</button>
+
+                    <div id="currencyLoading" class="tool-loading" hidden>Fetching latest rates…</div>
+                    <div id="currencyError" class="tool-error" hidden></div>
+
+                    <div id="currencyResult" class="tool-result" hidden>
+                        <div class="tool-result-main" id="currencyResultMain"></div>
+                        <div class="tool-result-sub" id="currencyResultSub"></div>
+                    </div>
+
+                </div>
+            </main>
+
+        </div>
+
     </div>
 
     <script src="assets/js/calculator-engine.js"></script>
@@ -185,6 +285,7 @@
     <script src="assets/js/ui-controls.js"></script>
     <script src="assets/js/keyboard.js"></script>
     <script src="assets/js/mobile.js"></script>
+    <script src="assets/js/tools.js"></script>
     <script src="assets/js/app.js"></script>
 
 </body>
