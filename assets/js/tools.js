@@ -32,7 +32,14 @@ const ageErrorEl = document.getElementById('ageError');
 const ageYearsEl = document.getElementById('ageYears');
 const ageMonthsEl = document.getElementById('ageMonths');
 const ageDaysEl = document.getElementById('ageDays');
+const ageTotalMonthsEl = document.getElementById('ageTotalMonths');
+const ageTotalMonthsDaysEl = document.getElementById('ageTotalMonthsDays');
+const ageTotalWeeksEl = document.getElementById('ageTotalWeeks');
+const ageTotalWeeksDaysEl = document.getElementById('ageTotalWeeksDays');
 const ageTotalDaysEl = document.getElementById('ageTotalDays');
+const ageTotalHoursEl = document.getElementById('ageTotalHours');
+const ageTotalMinutesEl = document.getElementById('ageTotalMinutes');
+const ageTotalSecondsEl = document.getElementById('ageTotalSeconds');
 
 function todayISO() {
     const d = new Date();
@@ -85,13 +92,30 @@ function calculateAge() {
         months += 12;
     }
 
-    const msPerDay = 24 * 60 * 60 * 1000;
+   const msPerDay = 24 * 60 * 60 * 1000;
     const totalDays = Math.round((asOf - birth) / msPerDay);
 
     ageYearsEl.textContent = years;
     ageMonthsEl.textContent = months;
     ageDaysEl.textContent = days;
-    ageTotalDaysEl.textContent = `${totalDays.toLocaleString()} total days`;
+
+    // Alternate breakdowns -- all derived from the same exact totalDays,
+    // so they always agree with the years/months/days figure above.
+    const totalMonths = years * 12 + months;
+    const totalWeeks = Math.floor(totalDays / 7);
+    const weeksRemainderDays = totalDays % 7;
+    const totalHours = totalDays * 24;
+    const totalMinutes = totalHours * 60;
+    const totalSeconds = totalMinutes * 60;
+
+    ageTotalMonthsEl.textContent = totalMonths.toLocaleString();
+    ageTotalMonthsDaysEl.textContent = days.toLocaleString();
+    ageTotalWeeksEl.textContent = totalWeeks.toLocaleString();
+    ageTotalWeeksDaysEl.textContent = weeksRemainderDays.toLocaleString();
+    ageTotalDaysEl.textContent = totalDays.toLocaleString();
+    ageTotalHoursEl.textContent = totalHours.toLocaleString();
+    ageTotalMinutesEl.textContent = totalMinutes.toLocaleString();
+    ageTotalSecondsEl.textContent = totalSeconds.toLocaleString();
 
     ageResultEl.hidden = false;
 }

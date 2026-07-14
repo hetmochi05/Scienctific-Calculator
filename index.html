@@ -26,159 +26,161 @@
 
         <div id="calcScreen" class="screen active">
 
-        <header class="title-bar">
+            <header class="title-bar">
 
-            <div class="title-left">
-                <button type="button" class="mobile-history-toggle" aria-label="Show history">
-                    <i class="fa-regular fa-clock"></i>
-                </button>
-                <button type="button" class="mode-toggle-btn" aria-label="Switch to Scientific mode">
-                    <i class="fa-solid fa-square-root-variable"></i>
-                </button>
-                <i class="fa-solid fa-calculator"></i>
-                <span>Calculator</span>
-            </div>
-
-            <div class="title-right">
-                <button type="button" id="openCurrencyScreen" aria-label="Currency calculator"><i class="fa-solid fa-money-bill-transfer"></i></button>
-                <button type="button" id="openAgeScreen" aria-label="Age calculator"><i class="fa-solid fa-cake-candles"></i></button>
-            </div>
-
-        </header>
-
-        <!-- ================= Main ================= -->
-
-        <main class="calculator">
-
-            <!-- ================= History ================= -->
-
-            <section class="history">
-
-                <button type="button" class="history-close" aria-label="Close history">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-
-                <div class="history-tabs">
-
-                    <button type="button" class="active">
+                <div class="title-left">
+                    <button type="button" class="mobile-history-toggle" aria-label="Show history">
                         <i class="fa-regular fa-clock"></i>
-                        History
+                    </button>
+                    <button type="button" class="mode-toggle-btn" aria-label="Switch to Scientific mode">
+                        <i class="fa-solid fa-square-root-variable"></i>
+                    </button>
+                    <i class="fa-solid fa-calculator"></i>
+                    <span>Calculator</span>
+                </div>
+
+                <div class="title-right">
+                    <button type="button" id="openCurrencyScreen" aria-label="Currency calculator"><i
+                            class="fa-solid fa-money-bill-transfer"></i></button>
+                    <button type="button" id="openAgeScreen" aria-label="Age calculator"><i
+                            class="fa-solid fa-cake-candles"></i></button>
+                </div>
+
+            </header>
+
+            <!-- ================= Main ================= -->
+
+            <main class="calculator">
+
+                <!-- ================= History ================= -->
+
+                <section class="history">
+
+                    <button type="button" class="history-close" aria-label="Close history">
+                        <i class="fa-solid fa-xmark"></i>
                     </button>
 
-                    <button type="button">
+                    <div class="history-tabs">
+
+                        <button type="button" class="active">
+                            <i class="fa-regular fa-clock"></i>
+                            History
+                        </button>
+
+                        <!-- <button type="button">
                         <i class="fa-regular fa-hard-drive"></i>
                         Memory
+                    </button> -->
+
+                    </div>
+
+                    <h3>Today</h3>
+
+                    <div class="history-list">
+                        <!-- populated dynamically by app.js (renderHistory) -->
+
+                    </div>
+
+                    <button type="button" class="clear-history">
+                        <i class="fa-regular fa-trash-can"></i>
+                        Clear History
                     </button>
-
-                </div>
-
-                <h3>Today</h3>
-
-                <div class="history-list">
-                    <!-- populated dynamically by app.js (renderHistory) -->
-
-                </div>
-
-                <button type="button" class="clear-history">
-                    <i class="fa-regular fa-trash-can"></i>
-                    Clear History
-                </button>
-
-            </section>
-
-            <!-- ================= Right Side ================= -->
-
-            <section class="right-panel">
-
-                <!-- Display -->
-
-                <section class="display">
-
-                    <div class="expression"></div>
-
-                    <div class="result" id="result">0</div>
 
                 </section>
 
-                <!-- Buttons -->
+                <!-- ================= Right Side ================= -->
 
-                <section class="buttons">
+                <section class="right-panel">
 
-                    <!-- Row 1 -->
+                    <!-- Display -->
 
-                    <button type="button" class="sci-only">(</button>
-                    <button type="button" class="sci-only">)</button>
-                    <button type="button" class="sci-only">mc</button>
-                    <button type="button" class="sci-only">m+</button>
-                    <button type="button" class="sci-only">m−</button>
-                    <button type="button" class="sci-only">mr</button>
-                    <button type="button" class="ac-btn">AC</button>
-                    <button class="backspace-btn" aria-label="Backspace">
-                        <i class="fa-solid fa-delete-left"></i>
-                    </button>
-                    <button type="button">+/-</button>
-                    <button type="button" class="operator">÷</button>
+                    <section class="display">
 
-                    <!-- Row 2 -->
+                        <div class="expression"></div>
 
-                    <button type="button" class="sci-only">2nd</button>
-                    <button type="button" class="sci-only">x²</button>
-                    <button type="button" class="sci-only">x³</button>
-                    <button type="button" class="sci-only">xʸ</button>
-                    <button type="button" class="sci-only">eˣ</button>
-                    <button type="button" class="sci-only">10ˣ</button>
-                    <button type="button">7</button>
-                    <button type="button">8</button>
-                    <button type="button">9</button>
-                    <button type="button" class="operator">×</button>
+                        <div class="result" id="result">0</div>
 
-                    <!-- Row 3 -->
+                    </section>
 
-                    <button type="button" class="sci-only">1/x</button>
-                    <button type="button" class="sci-only">²√x</button>
-                    <button type="button" class="sci-only">³√x</button>
-                    <button type="button" class="sci-only">ʸ√x</button>
-                    <button type="button" class="sci-only">ln</button>
-                    <button type="button" class="sci-only">log</button>
-                    <button type="button">4</button>
-                    <button type="button">5</button>
-                    <button type="button">6</button>
-                    <button type="button" class="operator">−</button>
+                    <!-- Buttons -->
 
-                    <!-- Row 4 -->
+                    <section class="buttons">
 
-                    <button type="button" class="sci-only">x!</button>
-                    <button type="button" class="sci-only">sin</button>
-                    <button type="button" class="sci-only">cos</button>
-                    <button type="button" class="sci-only">tan</button>
-                    <button type="button" class="sci-only">e</button>
-                    <button type="button" class="sci-only">EE</button>
-                    <button type="button">1</button>
-                    <button type="button">2</button>
-                    <button type="button">3</button>
-                    <button type="button" class="operator">+</button>
+                        <!-- Row 1 -->
 
-                    <!-- Row 5 -->
+                        <button type="button" class="sci-only">(</button>
+                        <button type="button" class="sci-only">)</button>
+                        <button type="button" class="sci-only">mc</button>
+                        <button type="button" class="sci-only">m+</button>
+                        <button type="button" class="sci-only">m−</button>
+                        <button type="button" class="sci-only">mr</button>
+                        <button type="button" class="ac-btn">AC</button>
+                        <button class="backspace-btn" aria-label="Backspace">
+                            <i class="fa-solid fa-delete-left"></i>
+                        </button>
+                        <button type="button">+/-</button>
+                        <button type="button" class="operator">÷</button>
 
-                    <button type="button" id="inlineModeToggle" class="sci-only" aria-label="Switch to Basic mode">
-                        <i class="fa-solid fa-calculator"></i>
-                    </button>
+                        <!-- Row 2 -->
 
-                    <button type="button" class="sci-only">sinh</button>
-                    <button type="button" class="sci-only">cosh</button>
-                    <button type="button" class="sci-only">tanh</button>
-                    <button type="button" class="sci-only">π</button>
-                    <button type="button" class="sci-only">Rad</button>
-                    <button type="button">%</button>
-                    <button type="button">0</button>
-                    <button type="button">.</button>
-                    <button type="button" class="operator">=</button>
+                        <button type="button" class="sci-only">2nd</button>
+                        <button type="button" class="sci-only">x²</button>
+                        <button type="button" class="sci-only">x³</button>
+                        <button type="button" class="sci-only">xʸ</button>
+                        <button type="button" class="sci-only">eˣ</button>
+                        <button type="button" class="sci-only">10ˣ</button>
+                        <button type="button">7</button>
+                        <button type="button">8</button>
+                        <button type="button">9</button>
+                        <button type="button" class="operator">×</button>
+
+                        <!-- Row 3 -->
+
+                        <button type="button" class="sci-only">1/x</button>
+                        <button type="button" class="sci-only">²√x</button>
+                        <button type="button" class="sci-only">³√x</button>
+                        <button type="button" class="sci-only">ʸ√x</button>
+                        <button type="button" class="sci-only">ln</button>
+                        <button type="button" class="sci-only">log</button>
+                        <button type="button">4</button>
+                        <button type="button">5</button>
+                        <button type="button">6</button>
+                        <button type="button" class="operator">−</button>
+
+                        <!-- Row 4 -->
+
+                        <button type="button" class="sci-only">x!</button>
+                        <button type="button" class="sci-only">sin</button>
+                        <button type="button" class="sci-only">cos</button>
+                        <button type="button" class="sci-only">tan</button>
+                        <button type="button" class="sci-only">e</button>
+                        <button type="button" class="sci-only">EE</button>
+                        <button type="button">1</button>
+                        <button type="button">2</button>
+                        <button type="button">3</button>
+                        <button type="button" class="operator">+</button>
+
+                        <!-- Row 5 -->
+
+                        <button type="button" id="inlineModeToggle" class="sci-only" aria-label="Switch to Basic mode">
+                            <i class="fa-solid fa-calculator"></i>
+                        </button>
+
+                        <button type="button" class="sci-only">sinh</button>
+                        <button type="button" class="sci-only">cosh</button>
+                        <button type="button" class="sci-only">tanh</button>
+                        <button type="button" class="sci-only">π</button>
+                        <button type="button" class="sci-only">Rad</button>
+                        <button type="button">%</button>
+                        <button type="button">0</button>
+                        <button type="button">.</button>
+                        <button type="button" class="operator">=</button>
+
+                    </section>
 
                 </section>
 
-            </section>
-
-        </main>
+            </main>
 
         </div>
 
@@ -213,11 +215,20 @@
 
                     <div id="ageResult" class="tool-result" hidden>
                         <div class="tool-result-main">
-                            <span id="ageYears">0</span> years,
-                            <span id="ageMonths">0</span> months,
+                            <span id="ageYears">0</span> years
+                            <span id="ageMonths">0</span> months
                             <span id="ageDays">0</span> days
                         </div>
-                        <div class="tool-result-sub" id="ageTotalDays"></div>
+                        <div class="age-breakdown">
+                            <div>or <span id="ageTotalMonths">0</span> months <span id="ageTotalMonthsDays">0</span>
+                                days</div>
+                            <div>or <span id="ageTotalWeeks">0</span> weeks <span id="ageTotalWeeksDays">0</span> days
+                            </div>
+                            <div>or <span id="ageTotalDays">0</span> days</div>
+                            <div>or <span id="ageTotalHours">0</span> hours</div>
+                            <div>or <span id="ageTotalMinutes">0</span> minutes</div>
+                            <div>or <span id="ageTotalSeconds">0</span> seconds</div>
+                        </div>
                     </div>
 
                 </div>
@@ -253,7 +264,8 @@
                             <select id="currencyFrom" class="tool-select"></select>
                         </div>
 
-                        <button type="button" id="currencySwapBtn" class="currency-swap-btn" aria-label="Swap currencies">
+                        <button type="button" id="currencySwapBtn" class="currency-swap-btn"
+                            aria-label="Swap currencies">
                             <i class="fa-solid fa-arrow-right-arrow-left"></i>
                         </button>
 
