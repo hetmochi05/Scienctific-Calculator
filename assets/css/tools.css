@@ -98,6 +98,20 @@
     margin-top: 0;
 }
 
+.currency-update{
+    margin-top:8px;
+    font-size:.85rem;
+    color:#9aa6b2;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:6px;
+}
+
+.currency-update i{
+    color:#ffb020;
+}
+
 .currency-swap-btn {
     flex-shrink: 0;
     width: 46px;

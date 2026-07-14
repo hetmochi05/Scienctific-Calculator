@@ -92,7 +92,7 @@ function calculateAge() {
         months += 12;
     }
 
-   const msPerDay = 24 * 60 * 60 * 1000;
+    const msPerDay = 24 * 60 * 60 * 1000;
     const totalDays = Math.round((asOf - birth) / msPerDay);
 
     ageYearsEl.textContent = years;
@@ -122,9 +122,14 @@ function calculateAge() {
 
 if (ageCalculateBtn) ageCalculateBtn.addEventListener('click', calculateAge);
 
+
+
+
 // ================= Currency Calculator =================
-// Live rates from Frankfurter (frankfurter.app) -- free, no API key,
-// CORS-enabled, ECB reference rates updated daily.
+// API: ExchangeRate-API (open.er-api.com)
+// Purpose: Fetch live currency exchange rates for conversion
+// Features: Free access, no API key, HTTPS, CORS enabled
+// Rates are updated daily and optimized for web applications
 
 const CURRENCY_NAMES = {
     AUD: 'Australian Dollar', BGN: 'Bulgarian Lev', BRL: 'Brazilian Real', CAD: 'Canadian Dollar',
@@ -167,6 +172,28 @@ function populateCurrencyDropdowns() {
     currencyToEl.value = 'EUR';
 }
 
+// Auto Convert (300ms delay)
+
+let convertTimeout;
+
+function autoConvert() {
+
+    clearTimeout(convertTimeout);
+
+    convertTimeout = setTimeout(() => {
+
+        const amount = parseFloat(currencyAmountEl.value);
+
+        if (!isNaN(amount) && amount > 0) {
+            convertCurrency();
+        } else {
+            currencyResultEl.hidden = true;
+            currencyErrorEl.hidden = true;
+        }
+
+    }, 300);
+
+}
 if (currencyFromEl && currencyToEl) populateCurrencyDropdowns();
 
 async function convertCurrency() {
@@ -177,15 +204,15 @@ async function convertCurrency() {
     const from = currencyFromEl.value;
     const to = currencyToEl.value;
 
-    if (isNaN(amount) || amount < 0) {
-        currencyErrorEl.textContent = 'Please enter a valid amount.';
+    if (isNaN(amount) || amount <= 0) {
+        currencyErrorEl.textContent = "Please enter a valid amount greater than 0.";
         currencyErrorEl.hidden = false;
         return;
     }
 
     if (from === to) {
-        currencyResultMainEl.textContent = `${amount} ${from} = ${amount} ${to}`;
-        currencyResultSubEl.textContent = 'Same currency selected.';
+        currencyResultMainEl.textContent = `${amount.toLocaleString()} ${from} = ${amount.toLocaleString()} ${to}`;
+        currencyResultSubEl.textContent = "Both currencies are the same.";
         currencyResultEl.hidden = false;
         return;
     }
@@ -194,36 +221,90 @@ async function convertCurrency() {
     currencyConvertBtn.disabled = true;
 
     try {
-        const res = await fetch(`https://api.frankfurter.app/latest?base=${from}&symbols=${to}`);
-        if (!res.ok) throw new Error('Request failed');
+        const res = await fetch(`https://open.er-api.com/v6/latest/${from}`);
+
+        if (!res.ok) {
+            throw new Error("Request failed");
+        }
+
         const data = await res.json();
+
+        if (data.result !== "success") {
+            throw new Error("API Error");
+        }
+
         const rate = data.rates[to];
 
-        if (typeof rate !== 'number') throw new Error('Rate not available for this pair');
+        if (typeof rate !== "number") {
+            throw new Error("Rate unavailable");
+        }
 
         const converted = amount * rate;
 
+        // Last updated
+        const updatedAt = new Date(data.time_last_update_unix * 1000);
+
+        const formattedDate = updatedAt.toLocaleDateString(undefined, {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        });
+
+        const formattedTime = updatedAt.toLocaleTimeString(undefined, {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+
         currencyResultMainEl.textContent =
-            `${amount.toLocaleString()} ${from} = ${converted.toLocaleString(undefined, { maximumFractionDigits: 4 })} ${to}`;
-        currencyResultSubEl.textContent =
-            `1 ${from} = ${rate.toLocaleString(undefined, { maximumFractionDigits: 6 })} ${to} · rates as of ${data.date} (Frankfurter/ECB)`;
+            `${amount.toLocaleString()} ${from} = ${converted.toLocaleString(undefined, {
+                maximumFractionDigits: 4
+            })} ${to}`;
+
+        currencyResultSubEl.innerHTML = `
+            <div>1 ${from} = ${rate.toLocaleString(undefined,{
+                maximumFractionDigits:6
+            })} ${to}</div>
+
+            <div class="currency-update">
+                <i class="fa-solid fa-clock"></i>
+                Last Updated: ${formattedDate} • ${formattedTime}
+            </div>
+        `;
 
         currencyResultEl.hidden = false;
+
     } catch (err) {
-        currencyErrorEl.textContent = 'Could not fetch exchange rates. Check your internet connection and try again.';
+
+        currencyErrorEl.textContent =
+            "Could not fetch exchange rates. Please check your internet connection.";
+
         currencyErrorEl.hidden = false;
+
     } finally {
+
         currencyLoadingEl.hidden = true;
         currencyConvertBtn.disabled = false;
+
     }
 }
-
 if (currencyConvertBtn) currencyConvertBtn.addEventListener('click', convertCurrency);
+currencyAmountEl.addEventListener("input", autoConvert);
+
+currencyFromEl.addEventListener("change", autoConvert);
+
+currencyToEl.addEventListener("change", autoConvert);
 
 if (currencySwapBtn) {
-    currencySwapBtn.addEventListener('click', () => {
-        const tmp = currencyFromEl.value;
-        currencyFromEl.value = currencyToEl.value;
-        currencyToEl.value = tmp;
+
+    currencySwapBtn.addEventListener("click", () => {
+
+        [currencyFromEl.value, currencyToEl.value] = [
+            currencyToEl.value,
+            currencyFromEl.value
+        ];
+
+        autoConvert();
+
     });
+
 }
