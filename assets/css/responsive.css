@@ -1,48 +1,29 @@
 /* ==========================================================
    responsive.css
-   Mobile + tablet styling. Everything here is scoped inside
-   media queries, so it only kicks in on smaller screens and
-   overrides the desktop rules from style.css.
+   Tablet + mobile styling, rebuilt to feel like a real native
+   calculator app rather than a shrunk-down desktop layout:
+   - History becomes a bottom sheet (not a side drawer)
+   - Basic mode gets big, tactile circular keys
+   - Tablet gets its own real sizing tier, not just "smaller mobile"
    ========================================================== */
 
-/* Mobile drawer + mode-toggle controls — hidden on desktop by default,
-   shown only once we're inside the mobile breakpoint below */
-.mobile-history-toggle {
-    display: none;
-}
-
-.mode-toggle-btn {
-    display: none;
-}
-
-.history-close {
-    display: none;
-}
-
+/* Hidden on desktop by default -- only meaningful once we're in
+   compact mode below (tablet or phone) */
+.mobile-history-toggle,
+.mode-toggle-btn,
+.history-close,
 .history-backdrop {
     display: none;
 }
 
-/* ===================== Tablet: collapse history panel ===================== */
-@media (max-width:1200px) {
-    .calculator {
-        grid-template-columns: 1fr
-    }
+/* ============================================================
+   SHARED "COMPACT MODE" FOUNDATION -- anything 1024px and under.
+   Fullscreen window, bottom-sheet history, and the Basic/
+   Scientific toggle become available. Sizing (button/text scale)
+   is handled separately per tier below.
+   ============================================================ */
+@media (max-width: 1024px) {
 
-    .history {
-        display: none
-    }
-
-    .window {
-        height: auto
-    }
-}
-
-/* ===================== Mobile: shared structural rules =====================
-   Applies whenever we're in "mobile app" mode — either a narrow portrait
-   phone, or a short landscape phone. Handles the fullscreen window,
-   history drawer (now slides from the LEFT), and backdrop. */
-@media (max-width:768px), (orientation:landscape) and (max-height:600px) {
     body {
         padding: 0;
         align-items: stretch;
@@ -51,55 +32,104 @@
     .window {
         width: 100%;
         height: 100vh;
+        height: 100dvh; /* dynamic viewport height where supported -- avoids the mobile address-bar jump */
         border-radius: 0;
     }
 
     .calculator {
         grid-template-columns: 1fr;
-        padding: 14px;
-        gap: 14px;
     }
 
-    .title-right button {
-        display: none;
-    }
-
-    .mobile-history-toggle {
+    /* ---------- Title bar icon buttons ---------- */
+    .mobile-history-toggle,
+    .mode-toggle-btn {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 38px;
-        height: 38px;
+        width: 40px;
+        height: 40px;
         border: none;
-        border-radius: 10px;
-        background: transparent;
-        color: #fff;
+        border-radius: 50%;
         cursor: pointer;
+        transition: background .15s ease, transform .15s ease;
     }
 
-    /* History becomes a slide-in drawer from the LEFT, instead of a fixed side panel */
+    .mobile-history-toggle {
+        background: rgba(255, 255, 255, .06);
+        color: #fff;
+    }
+
+    .mobile-history-toggle:active {
+        background: rgba(255, 255, 255, .14);
+    }
+
+    .mode-toggle-btn {
+        background: rgba(255, 152, 0, .12);
+        color: var(--accent);
+    }
+
+    .mode-toggle-btn:active {
+        transform: scale(.9);
+        background: rgba(255, 152, 0, .22);
+    }
+
+    /* ---------- History: bottom sheet, not a side drawer ----------
+       Slides up from off-screen with rounded top corners and a
+       drag-handle affordance, like a native app's action sheet. */
     .history {
         display: flex;
         position: fixed;
-        top: 0;
-        left: -100%;
-        width: 85%;
-        max-width: 360px;
-        height: 100%;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: auto;
+        width: auto;
+        max-width: none;
+        height: 75vh;
+        max-height: 640px;
+        border-radius: 28px 28px 0 0;
+        box-shadow: 0 -20px 60px rgba(0, 0, 0, .55);
+        transform: translateY(100%);
+        transition: transform .35s cubic-bezier(.32, .72, 0, 1);
         z-index: 60;
-        border-radius: 0;
-        box-shadow: 12px 0 40px rgba(0, 0, 0, .5);
-        transition: left .3s ease;
+        padding: 10px 18px 18px;
     }
 
     .history.history-open {
-        left: 0;
+        transform: translateY(0);
+    }
+
+    .history::before {
+        content: "";
+        display: block;
+        width: 40px;
+        height: 4px;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, .25);
+        margin: 4px auto 14px;
+        flex-shrink: 0;
+    }
+
+    .history-close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 34px;
+        height: 34px;
+        border: none;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, .08);
+        color: #fff;
+        cursor: pointer;
     }
 
     .history-backdrop {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, .5);
+        background: rgba(0, 0, 0, .55);
         z-index: 55;
         opacity: 0;
         pointer-events: none;
@@ -112,86 +142,151 @@
         pointer-events: auto;
     }
 
-    .history-close {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        align-self: flex-end;
-        width: 36px;
-        height: 36px;
-        border: none;
-        border-radius: 10px;
-        background: #2b2b2b;
-        color: #fff;
-        margin-bottom: 10px;
-        cursor: pointer;
-    }
-
-    .mode-toggle-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 38px;
-        height: 38px;
-        border: none;
-        border-radius: 10px;
-        background: transparent;
-        color: var(--accent);
-        cursor: pointer;
-    }
-
-    .zero {
-        grid-column: auto
-    }
-
-    .display {
-        padding: 20px;
-    }
-
-    .expression {
-        font-size: 20px;
-    }
-
-    .result {
-        font-size: 48px
-    }
-}
-
-/* ===================== Basic mode (mobile) =====================
-   Applied when JS sets body[data-calc-mode="basic"] — either because the
-   phone is in portrait (auto-detected) or the user manually tapped the
-   mode-toggle button. Hides every scientific-only key, leaving just
-   digits, +-×÷=, %, +/-, AC, parentheses, and backspace. */
-@media (max-width:768px), (orientation:landscape) and (max-height:600px) {
+    /* ---------- Basic mode: hide scientific-only keys ---------- */
     body[data-calc-mode="basic"] .sci-only {
         display: none;
     }
 
+    /* ---------- Tool screens (age / currency) ---------- */
+    .tool-content {
+        padding: 28px 20px;
+    }
+
+    .tool-screen .title-left span {
+        font-size: 17px;
+    }
+}
+
+/* ============================================================
+   TABLET  (641px – 1024px)
+   More breathing room than a phone: larger buttons and text,
+   side-by-side currency fields still fit comfortably.
+   ============================================================ */
+@media (max-width: 1024px) and (min-width: 641px) {
+
+    .calculator {
+        padding: 24px;
+        gap: 20px;
+    }
+
+    .display {
+        padding: 28px;
+    }
+
+    .expression {
+        font-size: 24px;
+    }
+
+    .result {
+        font-size: 64px;
+    }
+
+    .right-panel {
+        gap: 20px;
+    }
+
     body[data-calc-mode="basic"] .right-panel {
-        grid-template-rows: 150px 1fr;  
+        grid-template-rows: 170px 1fr;
     }
 
     body[data-calc-mode="basic"] .buttons {
         grid-template-columns: repeat(4, 1fr);
         grid-template-rows: none;
         grid-auto-rows: 1fr;
-        gap: 12px;
+        gap: 18px;
         min-height: 0;
     }
 
     body[data-calc-mode="basic"] .buttons button {
         border-radius: 50%;
-        font-size: 22px;
+        font-size: 26px;
         min-height: 0;
     }
 
-    /* ===================== Scientific mode (mobile) =====================
-       Applied when body[data-calc-mode="scientific"] — landscape auto-detect
-       or manual toggle. Shows all 50 keys, packed tighter since there's less
-       room per key than the 4-column Basic layout. */
     body[data-calc-mode="scientific"] .right-panel {
-        grid-template-rows: 80px 1fr; 
-    } 
+        grid-template-rows: 100px 1fr;
+    }
+
+    body[data-calc-mode="scientific"] .buttons {
+        grid-template-columns: repeat(8, 1fr);
+        grid-template-rows: none;
+        grid-auto-rows: 1fr;
+        gap: 12px;
+        min-height: 0;
+    }
+
+    body[data-calc-mode="scientific"] .buttons button {
+        border-radius: 16px;
+        font-size: 18px;
+        min-height: 0;
+    }
+}
+
+/* ============================================================
+   PHONE  (≤640px, or short landscape phones)
+   The real mobile-app experience: big tactile circular keys in
+   Basic mode, tight-but-comfortable Scientific grid, satisfying
+   press feedback throughout.
+   ============================================================ */
+@media (max-width: 640px), (orientation: landscape) and (max-height: 600px) {
+
+    .title-bar {
+        height: 60px;
+        padding: 0 16px;
+    }
+
+    .title-left span {
+        font-size: 17px;
+    }
+
+    .calculator {
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .display {
+        padding: 22px 20px;
+    }
+
+    .expression {
+        font-size: 18px;
+    }
+
+    .result {
+        font-size: 46px;
+    }
+
+    /* ---------- Basic mode: big, tactile, circular keys ---------- */
+    body[data-calc-mode="basic"] .right-panel {
+        grid-template-rows: 150px 1fr;
+        gap: 16px;
+    }
+
+    body[data-calc-mode="basic"] .buttons {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: none;
+        grid-auto-rows: 1fr;
+        gap: 14px;
+        min-height: 0;
+    }
+
+    body[data-calc-mode="basic"] .buttons button {
+        border-radius: 50%;
+        font-size: 24px;
+        min-height: 0;
+        transition: transform .12s ease, filter .12s ease;
+    }
+
+    body[data-calc-mode="basic"] .buttons button:active {
+        transform: scale(.88);
+        filter: brightness(1.15);
+    }
+
+    /* ---------- Scientific mode: denser, still comfortable ---------- */
+    body[data-calc-mode="scientific"] .right-panel {
+        grid-template-rows: 78px 1fr;
+        gap: 10px;
+    }
 
     body[data-calc-mode="scientific"] .buttons {
         grid-template-columns: repeat(8, 1fr);
@@ -205,17 +300,38 @@
         border-radius: 14px;
         font-size: 15px;
         min-height: 0;
+        transition: transform .1s ease;
+    }
+
+    body[data-calc-mode="scientific"] .buttons button:active {
+        transform: scale(.9);
     }
 
     body[data-calc-mode="scientific"] .display {
-        padding: 12px 20px;
+        padding: 14px 20px;
     }
 
     body[data-calc-mode="scientific"] .expression {
-        font-size: 16px;
+        font-size: 15px;
     }
 
     body[data-calc-mode="scientific"] .result {
         font-size: 32px;
+    }
+
+    /* ---------- Tool screens (age / currency) ---------- */
+    .tool-content {
+        padding: 24px 18px;
+        align-items: center;
+    }
+
+    .currency-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .currency-swap-btn {
+        align-self: center;
+        transform: rotate(90deg);
     }
 }
