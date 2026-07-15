@@ -32,7 +32,8 @@
     .window {
         width: 100%;
         height: 100vh;
-        height: 100dvh; /* dynamic viewport height where supported -- avoids the mobile address-bar jump */
+        height: 100dvh;
+        /* dynamic viewport height where supported -- avoids the mobile address-bar jump */
         border-radius: 0;
     }
 
@@ -108,22 +109,6 @@
         background: rgba(255, 255, 255, .25);
         margin: 4px auto 14px;
         flex-shrink: 0;
-    }
-
-    .history-close {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: absolute;
-        top: 14px;
-        right: 14px;
-        width: 34px;
-        height: 34px;
-        border: none;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, .08);
-        color: #fff;
-        cursor: pointer;
     }
 
     .history-backdrop {
@@ -228,7 +213,8 @@
    Basic mode, tight-but-comfortable Scientific grid, satisfying
    press feedback throughout.
    ============================================================ */
-@media (max-width: 640px), (orientation: landscape) and (max-height: 600px) {
+@media (max-width: 640px),
+(orientation: landscape) and (max-height: 600px) {
 
     .title-bar {
         height: 60px;

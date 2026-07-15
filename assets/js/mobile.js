@@ -7,7 +7,6 @@
 
 const historyPanel = document.querySelector('.history');
 const historyToggleBtn = document.querySelector('.mobile-history-toggle');
-const historyCloseBtn = document.querySelector('.history-close');
 const historyBackdrop = document.querySelector('.history-backdrop');
 
 function openHistoryDrawer() {
@@ -21,7 +20,6 @@ function closeHistoryDrawer() {
 }
 
 if (historyToggleBtn) historyToggleBtn.addEventListener('click', openHistoryDrawer);
-if (historyCloseBtn) historyCloseBtn.addEventListener('click', closeHistoryDrawer);
 if (historyBackdrop) historyBackdrop.addEventListener('click', closeHistoryDrawer);
 
 // ---------- Basic / Scientific mode (mobile) ----------
