@@ -29,7 +29,6 @@
     <!-- CSS (order matters: colors first, then base, then responsive overrides last) -->
     <link rel="stylesheet" href="assets/css/colors.css">
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/responsive.css">
     <link rel="stylesheet" href="assets/css/tools.css">
 
     <!-- Icons -->
@@ -40,8 +39,6 @@
 
     <div class="window">
 
-        <div class="history-backdrop"></div>
-
         <!-- ================= CALCULATOR SCREEN ================= -->
 
         <div id="calcScreen" class="screen active">
@@ -49,12 +46,6 @@
             <header class="title-bar">
 
                 <div class="title-left">
-                    <button type="button" class="mobile-history-toggle" aria-label="Show history">
-                        <i class="fa-regular fa-clock"></i>
-                    </button>
-                    <button type="button" class="mode-toggle-btn" aria-label="Switch to Scientific mode">
-                        <i class="fa-solid fa-square-root-variable"></i>
-                    </button>
                     <i class="fa-solid fa-calculator"></i>
                     <span>Calculator</span>
                 </div>
@@ -64,6 +55,7 @@
                             class="fa-solid fa-money-bill-transfer"></i></button>
                     <button type="button" id="openAgeScreen" aria-label="Age calculator"><i
                             class="fa-solid fa-cake-candles"></i></button>
+
                 </div>
 
             </header>
@@ -307,7 +299,6 @@
     <script src="assets/js/display.js"></script>
     <script src="assets/js/ui-controls.js"></script>
     <script src="assets/js/keyboard.js"></script>
-    <script src="assets/js/mobile.js"></script>
     <script src="assets/js/tools.js"></script>
     <script src="assets/js/app.js"></script>
 
