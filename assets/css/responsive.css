@@ -1,0 +1,223 @@
+/* ==========================================================
+   responsive.css
+   Responsive overrides for tablet, mobile, and landscape viewports.
+   Ensures the calculator, history drawer, and tools look and
+   feel great across all screen sizes.
+   ========================================================== */
+
+/* Tablet & Smaller Desktops */
+@media (max-width: 1024px) {
+    .window {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+        border: none;
+    }
+
+    body {
+        padding: 0;
+    }
+
+    .calculator {
+        gap: 14px;
+        padding: 14px;
+    }
+
+    .buttons {
+        gap: 8px;
+    }
+
+    .buttons button {
+        font-size: 19px;
+        min-height: 44px;
+        border-radius: 12px;
+    }
+
+    .operator {
+        font-size: 24px !important;
+    }
+
+    .result {
+        font-size: 58px;
+    }
+}
+
+/* Tablet Portrait & Collapsible History Drawer */
+@media (max-width: 860px) {
+    .calculator {
+        grid-template-columns: 1fr;
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .mobile-history-toggle {
+        display: flex !important;
+    }
+
+    .history {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: min(340px, 85vw);
+        height: 100vh;
+        z-index: 100;
+        border-radius: 0 20px 20px 0;
+        box-shadow: 10px 0 40px rgba(0, 0, 0, 0.7);
+        transform: translateX(-105%);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        border: none;
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .history.history-open {
+        transform: translateX(0);
+    }
+
+    .history-close-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .buttons {
+        gap: 6px;
+    }
+
+    .buttons button {
+        font-size: 16px;
+        min-height: 42px;
+        border-radius: 10px;
+    }
+
+    .calculator.mode-basic .buttons button {
+        font-size: 26px !important;
+        min-height: 54px !important;
+        border-radius: 14px !important;
+    }
+}
+
+/* Mobile Devices */
+@media (max-width: 600px) {
+    .title-bar {
+        height: 54px;
+        padding: 0 10px;
+    }
+
+    .title-left {
+        font-size: 16px;
+        gap: 6px;
+    }
+
+    .app-title {
+        display: none; /* Icon and mode pill are sufficient */
+    }
+
+    .mode-pill-btn {
+        padding: 4px 10px;
+        font-size: 12px;
+        margin-left: 2px;
+    }
+
+    .title-right {
+        gap: 4px;
+    }
+
+    .title-right button {
+        width: 36px;
+        height: 36px;
+        font-size: 17px;
+    }
+
+    .calculator {
+        padding: 8px;
+        gap: 8px;
+    }
+
+    .right-panel {
+        gap: 10px;
+    }
+
+    .display {
+        padding: 12px 16px;
+        min-height: 110px;
+        border-radius: 16px;
+    }
+
+    .expression {
+        font-size: 18px;
+        min-height: 24px;
+    }
+
+    .result {
+        font-size: 44px;
+    }
+
+    /* Scientific mode on mobile portrait: compact key grid */
+    .buttons {
+        gap: 4px;
+    }
+
+    .buttons button {
+        min-height: 38px;
+        font-size: 13px;
+        border-radius: 8px;
+    }
+
+    .operator {
+        font-size: 18px !important;
+    }
+
+    /* Basic mode on mobile portrait: big, spacious thumb-friendly keys */
+    .calculator.mode-basic .buttons {
+        gap: 8px;
+    }
+
+    .calculator.mode-basic .buttons button {
+        min-height: 52px !important;
+        font-size: 22px !important;
+        border-radius: 14px !important;
+    }
+
+    .calculator.mode-basic .operator {
+        font-size: 26px !important;
+    }
+
+    .tool-content {
+        padding: 16px 10px;
+    }
+
+    .tool-card {
+        padding: 16px 14px;
+        border-radius: 16px;
+    }
+
+    .age-breakdown {
+        font-size: 14px;
+    }
+}
+
+/* Height-constrained landscape mobile screens */
+@media (max-height: 520px) {
+    .title-bar {
+        height: 44px;
+    }
+
+    .calculator {
+        padding: 6px;
+        gap: 6px;
+    }
+
+    .display {
+        min-height: 80px;
+        padding: 8px 14px;
+    }
+
+    .result {
+        font-size: 36px;
+    }
+
+    .buttons button {
+        min-height: 32px;
+    }
+}

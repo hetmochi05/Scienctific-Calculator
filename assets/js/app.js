@@ -1,13 +1,23 @@
 /* ==========================================================
    app.js
-   Bootstrap: wires every button (by its label) to the actions
-   defined in ui-controls.js, then initializes the display.
+   Application bootstrap: wires button events to ui-controls.js,
+   binds header controls (mode, sound, history drawer), and
+   initializes app state from localStorage.
    ========================================================== */
 
 const allButtons = document.querySelectorAll('.buttons button');
 const backspaceBtn = document.querySelector('.backspace-btn');
+const headerModeToggle = document.getElementById('headerModeToggle');
+const toggleSoundBtn = document.getElementById('toggleSoundBtn');
+const openHistoryDrawerBtn = document.getElementById('openHistoryDrawerBtn');
+const copyResultBtn = document.getElementById('copyResultBtn');
 
 function handleButton(btn) {
+    // Mode toggle button
+    if (btn.id === 'inlineModeToggle' || btn.getAttribute('data-action') === 'toggle-mode') {
+        return toggleCalculatorMode();
+    }
+
     const label = btn.textContent.trim();
 
     // Digits + decimal
@@ -18,11 +28,11 @@ function handleButton(btn) {
     if (label === '(') return appendValue('(');
     if (label === ')') return appendValue(')');
 
-    // Basic operators (raw tokens the engine expects)
+    // Basic operators
     if (label === '+') return appendValue('+');
-    if (label === '−') return appendValue('-');
-    if (label === '×') return appendValue('*');
-    if (label === '÷') return appendValue('/');
+    if (label === '−' || label === '-') return appendValue('-');
+    if (label === '×' || label === '*') return appendValue('*');
+    if (label === '÷' || label === '/') return appendValue('/');
     if (label === '=') return calculate();
 
     // Control
@@ -40,9 +50,9 @@ function handleButton(btn) {
     if (label === 'Rad' || label === 'Deg') return toggleAngleModeBtn(btn);
     if (label === '2nd') return toggleSecondMode(btn);
 
-    // xʸ / ʸ√x — binary sci operators, just insert the token
+    // Binary sci operators
     if (label === 'xʸ') return appendValue('^');
-    if (label === 'ʸ√x') return appendValue('#');
+    if (label === 'ʸ√x' || label === 'ⁿ√x') return appendValue('#');
 
     // Unary sci functions
     if (label === 'x²') return applyUnary(x => Math.pow(x, 2));
@@ -59,17 +69,23 @@ function handleButton(btn) {
     if (label === 'e') return insertConstant(Math.E);
     if (label === 'EE') return insertExponentEE();
 
-    // Trig — same handler regardless of 2nd/inverse label, applyTrig checks secondMode itself
+    // Trig functions
     if (label === 'sin' || label === 'sin⁻¹') return applyTrig('sin');
     if (label === 'cos' || label === 'cos⁻¹') return applyTrig('cos');
     if (label === 'tan' || label === 'tan⁻¹') return applyTrig('tan');
 
-    // Hyperbolic — same idea
+    // Hyperbolic functions
     if (label === 'sinh' || label === 'sinh⁻¹') return applyHyp('sinh');
     if (label === 'cosh' || label === 'cosh⁻¹') return applyHyp('cosh');
     if (label === 'tanh' || label === 'tanh⁻¹') return applyHyp('tanh');
 
-    // Fallback: the icon-only button (row 5, calculator icon) — no-op
+    // Ans (Last result)
+    if (label === 'Ans') {
+        if (ansValue && ansValue !== 'Error') {
+            appendValue(ansValue);
+        }
+        return;
+    }
 }
 
 allButtons.forEach(btn => {
@@ -80,7 +96,26 @@ if (backspaceBtn) {
     backspaceBtn.addEventListener('click', deleteLast);
 }
 
-// ---------- Init ----------
+if (headerModeToggle) {
+    headerModeToggle.addEventListener('click', toggleCalculatorMode);
+}
+
+if (toggleSoundBtn) {
+    toggleSoundBtn.addEventListener('click', toggleMute);
+}
+
+if (openHistoryDrawerBtn) {
+    openHistoryDrawerBtn.addEventListener('click', toggleHistoryDrawer);
+}
+
+if (copyResultBtn) {
+    copyResultBtn.addEventListener('click', copyResultToClipboard);
+}
+
+// ---------- Initialization ----------
+setCalculatorMode(currentMode);
+updateSoundButtonUI();
+updateAngleIndicator();
+updateMemoryIndicator();
 clearDisplay();
-renderHistory(); // clears the static placeholder rows from index.html so the
-                  // visible list matches the real (empty) history array on first load
+renderHistory();

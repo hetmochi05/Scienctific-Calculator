@@ -1,9 +1,8 @@
 /* ==========================================================
    ui-controls.js
-   All the state + actions a button press can trigger:
-   typing, clear/backspace, calculate, memory, angle mode,
-   2nd/inverse toggle, and the unary scientific functions.
-   Built on top of calculator-engine.js's pure functions.
+   All state and actions for button interactions:
+   typing, clear/backspace, calculation, memory, angle mode,
+   sound effects, basic/scientific mode toggle, and unary functions.
    ========================================================== */
 
 let currentValue = "0";      // the raw expression string being typed
@@ -13,17 +12,39 @@ let lastOperand = null;
 let angleMode = "DEG";       // "DEG" or "RAD"
 let secondMode = false;
 let memoryValue = 0;
+let ansValue = "0";
 
+// Sound & Haptics state with persistence
+let isMuted = localStorage.getItem("smart_calc_muted") === "true";
 let clickSound;
 try {
     clickSound = new Audio("assets/sounds/Music.mp3");
-} catch { /* no audio support — silently skip */ }
+} catch { /* audio not supported */ }
 
 function playClick() {
-    if (!clickSound) return;
-    clickSound.volume = 0.3;
-    clickSound.currentTime = 0;
-    clickSound.play().catch(() => { });
+    if (isMuted || !clickSound) return;
+    try {
+        clickSound.volume = 0.25;
+        clickSound.currentTime = 0;
+        clickSound.play().catch(() => { });
+    } catch { }
+}
+
+function toggleMute() {
+    isMuted = !isMuted;
+    localStorage.setItem("smart_calc_muted", isMuted ? "true" : "false");
+    updateSoundButtonUI();
+}
+
+function updateSoundButtonUI() {
+    const soundBtn = document.getElementById("toggleSoundBtn");
+    if (soundBtn) {
+        soundBtn.innerHTML = isMuted
+            ? '<i class="fa-solid fa-volume-xmark"></i>'
+            : '<i class="fa-solid fa-volume-high"></i>';
+        soundBtn.setAttribute("aria-label", isMuted ? "Unmute sound" : "Mute sound");
+        soundBtn.title = isMuted ? "Sound: Muted (Click to unmute)" : "Sound: On (Click to mute)";
+    }
 }
 
 function haptic(type = "light") {
@@ -31,6 +52,45 @@ function haptic(type = "light") {
     if (type === "light") navigator.vibrate(10);
     else if (type === "medium") navigator.vibrate([15, 10, 15]);
     else if (type === "heavy") navigator.vibrate([30, 20, 30]);
+}
+
+// Mode toggle: 'scientific' or 'basic'
+let currentMode = localStorage.getItem("smart_calc_mode") || "scientific";
+
+function setCalculatorMode(mode) {
+    currentMode = mode;
+    localStorage.setItem("smart_calc_mode", mode);
+
+    const calcWrapper = document.querySelector(".calculator");
+    const modeToggleBtn = document.getElementById("inlineModeToggle");
+    const modeHeaderBtn = document.getElementById("headerModeToggle");
+
+    if (calcWrapper) {
+        if (mode === "basic") {
+            calcWrapper.classList.add("mode-basic");
+        } else {
+            calcWrapper.classList.remove("mode-basic");
+        }
+    }
+
+    if (modeToggleBtn) {
+        modeToggleBtn.innerHTML = mode === "basic"
+            ? '<i class="fa-solid fa-flask"></i>'
+            : '<i class="fa-solid fa-calculator"></i>';
+        modeToggleBtn.title = mode === "basic" ? "Switch to Scientific Mode" : "Switch to Basic Mode";
+        modeToggleBtn.setAttribute("aria-label", modeToggleBtn.title);
+    }
+
+    if (modeHeaderBtn) {
+        const textSpan = modeHeaderBtn.querySelector(".mode-text");
+        if (textSpan) textSpan.textContent = mode === "basic" ? "Standard" : "Scientific";
+        modeHeaderBtn.title = mode === "basic" ? "Mode: Standard (Click to switch to Scientific)" : "Mode: Scientific (Click to switch to Standard)";
+    }
+}
+
+function toggleCalculatorMode() {
+    playClick();
+    setCalculatorMode(currentMode === "scientific" ? "basic" : "scientific");
 }
 
 function hasDecimalInCurrentNumber() {
@@ -52,10 +112,6 @@ function appendValue(value) {
         currentValue = "0";
         justCalculated = false;
     } else if (justCalculated && CALC_OPERATORS.includes(value)) {
-        // Continuing from a fresh result (e.g. after "=" or picking a
-        // history item) with an operator — keep the number, just stop
-        // treating it as "fresh" so the next digit appends instead of
-        // wiping the operator back out.
         justCalculated = false;
     }
 
@@ -73,14 +129,10 @@ function appendValue(value) {
         }
 
         if (CALC_OPERATORS.includes(lastChar)) {
-            // The full run of operator chars at the end (e.g. "+", or "+-"
-            // if a negative number was started). Always replace the whole
-            // run, not just the last character, so a stranded leading
-            // operator can't survive multiple quick operator switches.
             const trailingRun = currentValue.match(/[+\-*/^#]+$/)[0];
 
             if (value === "-" && lastChar !== "-") {
-                // Extend the run to start typing a negative number, e.g. "8+" -> "8+-"
+                // Extend run to start a negative number, e.g. "8+" -> "8+-"
                 currentValue += "-";
                 renderResult(currentValue);
                 return;
@@ -119,12 +171,6 @@ function toggleSign() {
     if (currentValue === "0" || currentValue === "Error") return;
 
     const expr = currentValue;
-
-    // Find the true boundary of the number currently being toggled --
-    // same "walk backward, skip unary sign characters" logic used by
-    // applyUnary/memoryRecall -- instead of a naive string split, which
-    // can't reliably tell a sign character apart from an operator once
-    // there's more than one number in the expression.
     let splitIndex = -1;
     for (let i = expr.length - 1; i >= 0; i--) {
         const ch = expr[i];
@@ -138,11 +184,8 @@ function toggleSign() {
     const before = splitIndex === -1 ? "" : expr.slice(0, splitIndex + 1);
     const segment = splitIndex === -1 ? expr : expr.slice(splitIndex + 1);
 
-    if (segment === "") return; // nothing typed yet for this operand
+    if (segment === "") return;
 
-    // Strip ALL leading "-" characters (self-heals if a prior bug ever
-    // left more than one stacked up) and toggle based on whether there
-    // was at least one.
     const wasNegative = segment.startsWith("-");
     const bare = segment.replace(/^-+/, "");
 
@@ -166,10 +209,13 @@ function deleteLast() {
     playClick();
     haptic("medium");
 
-    if (currentValue === "Error") return;
+    if (currentValue === "Error") {
+        clearDisplay();
+        return;
+    }
 
     currentValue = currentValue.slice(0, -1);
-    if (currentValue === "") currentValue = "0";
+    if (currentValue === "" || currentValue === "-") currentValue = "0";
 
     justCalculated = false;
     renderResult(currentValue);
@@ -182,13 +228,17 @@ function calculate() {
     try {
         let originalExpression = currentValue;
 
-        // Real-calculator "repeat =" behavior
-        const isPlainNumber = /^-?\d*\.?\d+$/.test(originalExpression);
+        // Repeat "=" behavior: e.g. "5+3=" -> 8, pressing "=" again calculates 8+3=11
+        const isPlainNumber = /^-?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?$/.test(originalExpression);
         if (justCalculated && isPlainNumber && lastOperator !== null && lastOperand !== null) {
             originalExpression = originalExpression + lastOperator + lastOperand;
         }
 
-        let expression = originalExpression;
+        // Clean trailing dangling operators (e.g. "5+3+" -> "5+3")
+        let cleanedExpression = originalExpression.replace(/[+\-*/^#]+$/, "");
+        if (!cleanedExpression) cleanedExpression = "0";
+
+        let expression = cleanedExpression;
         expression = convertPercents(expression);
         expression = solveBrackets(expression);
 
@@ -200,14 +250,16 @@ function calculate() {
             flashError();
         } else {
             if (!(justCalculated && isPlainNumber)) {
-                const lastOp = extractLastOperation(originalExpression);
+                const lastOp = extractLastOperation(cleanedExpression);
                 if (lastOp) {
                     lastOperator = lastOp.operator;
                     lastOperand = lastOp.operand;
                 }
             }
 
-            currentValue = String(Number(result.toFixed(8)));
+            result = roundPrecision(result, 12);
+            currentValue = String(result);
+            ansValue = currentValue;
             renderExpression(originalExpression);
             renderResult(currentValue);
             addToHistory(originalExpression, currentValue);
@@ -222,8 +274,7 @@ function calculate() {
     }
 }
 
-// Apply a unary function (sin, sqrt, x², etc.) to the number currently
-// being typed — same instant-apply feel as a real calculator.
+// Apply unary function to the active number segment
 function applyUnary(fn) {
     playClick();
     if (currentValue === "Error") return;
@@ -257,20 +308,66 @@ function applyUnary(fn) {
         return;
     }
 
-    currentValue = before + String(Number(result.toFixed(8)));
+    result = roundPrecision(result, 12);
+    currentValue = before + String(result);
     justCalculated = false;
     renderResult(currentValue);
 }
 
+// Accurate trigonometry with exact angle normalization
+function safeSin(angle) {
+    if (angleMode === "DEG") {
+        const normalized = ((angle % 360) + 360) % 360;
+        if (normalized === 0 || normalized === 180) return 0;
+        if (normalized === 90) return 1;
+        if (normalized === 270) return -1;
+        return roundPrecision(Math.sin(toRad(angle)));
+    }
+    const val = Math.sin(angle);
+    return Math.abs(val) < 1e-15 ? 0 : roundPrecision(val);
+}
+
+function safeCos(angle) {
+    if (angleMode === "DEG") {
+        const normalized = ((angle % 360) + 360) % 360;
+        if (normalized === 90 || normalized === 270) return 0;
+        if (normalized === 0) return 1;
+        if (normalized === 180) return -1;
+        return roundPrecision(Math.cos(toRad(angle)));
+    }
+    const val = Math.cos(angle);
+    return Math.abs(val) < 1e-15 ? 0 : roundPrecision(val);
+}
+
+function safeTan(angle) {
+    if (angleMode === "DEG") {
+        const normalized = ((angle % 360) + 360) % 360;
+        if (normalized === 90 || normalized === 270) return NaN; // Undefined -> Error
+        if (normalized === 0 || normalized === 180) return 0;
+        if (normalized === 45 || normalized === 225) return 1;
+        if (normalized === 135 || normalized === 315) return -1;
+        return roundPrecision(Math.tan(toRad(angle)));
+    }
+    if (Math.abs(Math.cos(angle)) < 1e-15) return NaN;
+    const val = Math.tan(angle);
+    return Math.abs(val) < 1e-15 ? 0 : roundPrecision(val);
+}
+
 function applyTrig(name) {
     const fns = secondMode ? {
-        sin: n => angleMode === "DEG" ? toDeg(Math.asin(n)) : Math.asin(n),
-        cos: n => angleMode === "DEG" ? toDeg(Math.acos(n)) : Math.acos(n),
-        tan: n => angleMode === "DEG" ? toDeg(Math.atan(n)) : Math.atan(n),
+        sin: n => {
+            if (n < -1 || n > 1) return NaN;
+            return angleMode === "DEG" ? roundPrecision(toDeg(Math.asin(n))) : roundPrecision(Math.asin(n));
+        },
+        cos: n => {
+            if (n < -1 || n > 1) return NaN;
+            return angleMode === "DEG" ? roundPrecision(toDeg(Math.acos(n))) : roundPrecision(Math.acos(n));
+        },
+        tan: n => angleMode === "DEG" ? roundPrecision(toDeg(Math.atan(n))) : roundPrecision(Math.atan(n)),
     } : {
-        sin: n => Math.sin(angleMode === "DEG" ? toRad(n) : n),
-        cos: n => Math.cos(angleMode === "DEG" ? toRad(n) : n),
-        tan: n => Math.tan(angleMode === "DEG" ? toRad(n) : n),
+        sin: safeSin,
+        cos: safeCos,
+        tan: safeTan,
     };
     applyUnary(fns[name]);
 }
@@ -285,28 +382,31 @@ function applyHyp(name) {
 }
 
 function insertConstant(value) {
-    appendValue(String(Number(value.toFixed(8))));
+    appendValue(String(roundPrecision(value, 12)));
 }
 
 function toggleSecondMode(btnEl) {
     secondMode = !secondMode;
-    if (btnEl) btnEl.classList.toggle('active-second', secondMode);
+    if (btnEl) btnEl.classList.toggle("active-second", secondMode);
 
     const map = {
-        sin: 'sin⁻¹', cos: 'cos⁻¹', tan: 'tan⁻¹',
-        'sin⁻¹': 'sin', 'cos⁻¹': 'cos', 'tan⁻¹': 'tan',
-        sinh: 'sinh⁻¹', cosh: 'cosh⁻¹', tanh: 'tanh⁻¹',
-        'sinh⁻¹': 'sinh', 'cosh⁻¹': 'cosh', 'tanh⁻¹': 'tanh'
+        sin: "sin⁻¹", cos: "cos⁻¹", tan: "tan⁻¹",
+        "sin⁻¹": "sin", "cos⁻¹": "cos", "tan⁻¹": "tan",
+        sinh: "sinh⁻¹", cosh: "cosh⁻¹", tanh: "tanh⁻¹",
+        "sinh⁻¹": "sinh", "cosh⁻¹": "cosh", "tanh⁻¹": "tanh"
     };
-    document.querySelectorAll('.buttons button').forEach(btn => {
+    document.querySelectorAll(".buttons button").forEach(btn => {
         const t = btn.textContent.trim();
         if (map[t]) btn.textContent = map[t];
     });
+
+    updateSecondIndicator();
 }
 
 function toggleAngleModeBtn(btnEl) {
     angleMode = angleMode === "DEG" ? "RAD" : "DEG";
     if (btnEl) btnEl.textContent = angleMode === "DEG" ? "Rad" : "Deg";
+    updateAngleIndicator();
 }
 
 function insertExponentEE() {
@@ -317,19 +417,27 @@ function insertExponentEE() {
     appendValue("^");
 }
 
-// Memory
-function memoryClear() { memoryValue = 0; }
+// Memory operations
+function memoryClear() {
+    playClick();
+    memoryValue = 0;
+    updateMemoryIndicator();
+}
 
 function memoryAdd() {
+    playClick();
     const val = Number(currentValue);
     if (!isNaN(val)) memoryValue += val;
     justCalculated = true;
+    updateMemoryIndicator();
 }
 
 function memorySubtract() {
+    playClick();
     const val = Number(currentValue);
     if (!isNaN(val)) memoryValue -= val;
     justCalculated = true;
+    updateMemoryIndicator();
 }
 
 function memoryRecall() {
@@ -337,18 +445,12 @@ function memoryRecall() {
     haptic("light");
     if (currentValue === "Error") currentValue = "0";
 
-    const memStr = String(Number(memoryValue.toFixed(8)));
+    const memStr = String(roundPrecision(memoryValue, 12));
 
     if (justCalculated) {
-        // Fresh result on screen (e.g. right after "=") -- MR replaces it
-        // entirely, same as typing a brand new number.
         currentValue = memStr;
         justCalculated = false;
     } else {
-        // Replace whichever number is currently being typed (same segment
-        // logic as the unary functions), so "5+" + MR -> "5+7", and
-        // pressing MR again swaps in the latest value instead of
-        // concatenating digits onto whatever's already there.
         const expr = currentValue;
         let splitIndex = -1;
         for (let i = expr.length - 1; i >= 0; i--) {
@@ -364,4 +466,25 @@ function memoryRecall() {
     }
 
     renderResult(currentValue);
+}
+
+// Visual indicators updates
+function updateAngleIndicator() {
+    const badge = document.getElementById("angleBadge");
+    if (badge) badge.textContent = angleMode;
+}
+
+function updateMemoryIndicator() {
+    const badge = document.getElementById("memoryBadge");
+    if (badge) {
+        badge.classList.toggle("active-badge", memoryValue !== 0);
+        badge.textContent = memoryValue !== 0 ? `M (${roundPrecision(memoryValue, 4)})` : "M";
+    }
+}
+
+function updateSecondIndicator() {
+    const badge = document.getElementById("secondBadge");
+    if (badge) {
+        badge.classList.toggle("active-badge", secondMode);
+    }
 }

@@ -8,28 +8,25 @@
 
     <!-- Primary Meta Tags -->
     <meta name="title" content="Smart Calculator - Basic, Scientific, Age & Currency Calculator">
-
     <meta name="description"
         content="Smart Calculator is an all-in-one calculation tool featuring Basic Calculator, Scientific Calculator, Age Calculator, and Currency Converter with live exchange rates.">
-
     <meta name="keywords"
         content="calculator, smart calculator, online calculator, scientific calculator, age calculator, currency converter, math calculator, free calculator">
-
     <meta name="author" content="Het Mochi">
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/favicon/favicon.png">
+
     <!-- Theme Color -->
-    <meta name="theme-color" content="#1f2937">
-
-    <!-- Robots -->
+    <meta name="theme-color" content="#181a20">
     <meta name="robots" content="index, follow">
-
-    <!-- Language -->
     <meta name="language" content="English">
 
-    <!-- CSS (order matters: colors first, then base, then responsive overrides last) -->
+    <!-- CSS -->
     <link rel="stylesheet" href="assets/css/colors.css">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/tools.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
 
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
@@ -46,16 +43,31 @@
             <header class="title-bar">
 
                 <div class="title-left">
-                    <i class="fa-solid fa-calculator"></i>
-                    <span>Calculator</span>
+                    <i class="fa-solid fa-calculator app-icon"></i>
+                    <span class="app-title">Calculator</span>
+                    <!-- Standard / Scientific Mode Switcher Pill -->
+                    <button type="button" id="headerModeToggle" class="mode-pill-btn" aria-label="Toggle mode"
+                        title="Switch between Standard and Scientific Mode">
+                        <span class="mode-text">Scientific</span>
+                        <i class="fa-solid fa-repeat"></i>
+                    </button>
                 </div>
 
                 <div class="title-right">
-                    <button type="button" id="openCurrencyScreen" aria-label="Currency calculator"><i
-                            class="fa-solid fa-money-bill-transfer"></i></button>
-                    <button type="button" id="openAgeScreen" aria-label="Age calculator"><i
-                            class="fa-solid fa-cake-candles"></i></button>
-
+                    <button type="button" id="toggleSoundBtn" aria-label="Toggle sound" title="Sound: On">
+                        <i class="fa-solid fa-volume-high"></i>
+                    </button>
+                    <button type="button" id="openHistoryDrawerBtn" class="mobile-history-toggle"
+                        aria-label="Toggle history drawer" title="Calculation History">
+                        <i class="fa-regular fa-clock"></i>
+                    </button>
+                    <button type="button" id="openCurrencyScreen" aria-label="Currency converter"
+                        title="Currency Converter">
+                        <i class="fa-solid fa-money-bill-transfer"></i>
+                    </button>
+                    <button type="button" id="openAgeScreen" aria-label="Age calculator" title="Age Calculator">
+                        <i class="fa-solid fa-cake-candles"></i>
+                    </button>
                 </div>
 
             </header>
@@ -68,20 +80,25 @@
 
                 <section class="history">
 
-                    <div class="history-tabs">
-
-                        <button type="button" class="active">
-                            <i class="fa-regular fa-clock"></i>
-                            History
+                    <div class="history-header">
+                        <div class="history-tabs">
+                            <button type="button" class="active">
+                                <i class="fa-regular fa-clock"></i>
+                                History
+                            </button>
+                        </div>
+                        <button type="button" class="history-close-btn" aria-label="Close history drawer"
+                            onclick="closeHistoryDrawer()">
+                            <i class="fa-solid fa-xmark"></i>
                         </button>
-
                     </div>
 
-                    <h3>Today</h3>
+                    <div class="history-subhead">
+                        <h3>Recent Calculations</h3>
+                    </div>
 
                     <div class="history-list">
-                        <!-- populated dynamically by app.js (renderHistory) -->
-
+                        <!-- populated dynamically by display.js -->
                     </div>
 
                     <button type="button" class="clear-history">
@@ -98,6 +115,19 @@
                     <!-- Display -->
 
                     <section class="display">
+
+                        <div class="display-status-bar">
+                            <div class="status-badges">
+                                <span id="angleBadge" class="status-badge" title="Angle mode: DEG or RAD">DEG</span>
+                                <span id="memoryBadge" class="status-badge" title="Memory value stored">M</span>
+                                <span id="secondBadge" class="status-badge" title="2nd function active">2nd</span>
+                            </div>
+                            <button type="button" id="copyResultBtn" class="copy-btn" aria-label="Copy result"
+                                title="Copy result to clipboard">
+                                <i class="fa-regular fa-copy"></i>
+                                <span>Copy</span>
+                            </button>
+                        </div>
 
                         <div class="expression"></div>
 
@@ -118,7 +148,7 @@
                         <button type="button" class="sci-only">m−</button>
                         <button type="button" class="sci-only">mr</button>
                         <button type="button" class="ac-btn">AC</button>
-                        <button class="backspace-btn" aria-label="Backspace">
+                        <button type="button" class="backspace-btn" aria-label="Backspace">
                             <i class="fa-solid fa-delete-left"></i>
                         </button>
                         <button type="button">+/-</button>
@@ -165,7 +195,8 @@
 
                         <!-- Row 5 -->
 
-                        <button type="button" id="inlineModeToggle" class="sci-only" aria-label="Switch to Basic mode">
+                        <button type="button" id="inlineModeToggle" class="sci-only"
+                            aria-label="Switch to Standard mode" title="Switch between Standard and Scientific mode">
                             <i class="fa-solid fa-calculator"></i>
                         </button>
 
@@ -193,11 +224,11 @@
 
             <header class="title-bar">
                 <div class="title-left">
-                    <i class="fa-solid fa-cake-candles"></i>
+                    <i class="fa-solid fa-cake-candles app-icon"></i>
                     <span>Age Calculator</span>
                 </div>
                 <div class="title-right">
-                    <button type="button" data-back aria-label="Back to calculator">
+                    <button type="button" data-back aria-label="Back to calculator" title="Back to Calculator">
                         <i class="fa-solid fa-arrow-left"></i>
                     </button>
                 </div>
@@ -222,6 +253,12 @@
                             <span id="ageMonths">0</span> months
                             <span id="ageDays">0</span> days
                         </div>
+
+                        <div class="age-meta-row">
+                            <div id="ageNextBday" class="age-meta-item"></div>
+                            <div id="ageZodiac" class="age-meta-badge"></div>
+                        </div>
+
                         <div class="age-breakdown">
                             <div>or <span id="ageTotalMonths">0</span> months <span id="ageTotalMonthsDays">0</span>
                                 days</div>
@@ -245,11 +282,11 @@
 
             <header class="title-bar">
                 <div class="title-left">
-                    <i class="fa-solid fa-money-bill-transfer"></i>
+                    <i class="fa-solid fa-money-bill-transfer app-icon"></i>
                     <span>Currency Calculator</span>
                 </div>
                 <div class="title-right">
-                    <button type="button" data-back aria-label="Back to calculator">
+                    <button type="button" data-back aria-label="Back to calculator" title="Back to Calculator">
                         <i class="fa-solid fa-arrow-left"></i>
                     </button>
                 </div>
@@ -259,7 +296,19 @@
                 <div class="tool-card">
 
                     <label class="tool-label" for="currencyAmount">Amount</label>
-                    <input type="number" id="currencyAmount" class="tool-input" value="1" min="0" step="any">
+                    <input type="number" id="currencyAmount" class="tool-input" value="1" min="0" step="any"
+                        placeholder="Enter amount">
+
+                    <div class="currency-chips">
+                        <span class="chips-label">Popular:</span>
+                        <button type="button" class="currency-chip" data-currency-quick="USD">USD</button>
+                        <button type="button" class="currency-chip" data-currency-quick="EUR">EUR</button>
+                        <button type="button" class="currency-chip" data-currency-quick="GBP">GBP</button>
+                        <button type="button" class="currency-chip" data-currency-quick="INR">INR</button>
+                        <button type="button" class="currency-chip" data-currency-quick="JPY">JPY</button>
+                        <button type="button" class="currency-chip" data-currency-quick="CAD">CAD</button>
+                        <button type="button" class="currency-chip" data-currency-quick="AUD">AUD</button>
+                    </div>
 
                     <div class="currency-row">
                         <div class="currency-field">
@@ -268,7 +317,7 @@
                         </div>
 
                         <button type="button" id="currencySwapBtn" class="currency-swap-btn"
-                            aria-label="Swap currencies">
+                            aria-label="Swap currencies" title="Swap currencies">
                             <i class="fa-solid fa-arrow-right-arrow-left"></i>
                         </button>
 
@@ -280,7 +329,9 @@
 
                     <button type="button" id="currencyConvertBtn" class="tool-primary-btn">Convert</button>
 
-                    <div id="currencyLoading" class="tool-loading" hidden>Fetching latest rates…</div>
+                    <div id="currencyLoading" class="tool-loading" hidden>
+                        <i class="fa-solid fa-spinner fa-spin"></i> Fetching latest rates…
+                    </div>
                     <div id="currencyError" class="tool-error" hidden></div>
 
                     <div id="currencyResult" class="tool-result" hidden>
