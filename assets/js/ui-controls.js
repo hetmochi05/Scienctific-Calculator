@@ -82,8 +82,10 @@ function setCalculatorMode(mode) {
     }
 
     if (modeHeaderBtn) {
-        const textSpan = modeHeaderBtn.querySelector(".mode-text");
-        if (textSpan) textSpan.textContent = mode === "basic" ? "Standard" : "Scientific";
+        const fullSpan = modeHeaderBtn.querySelector(".mode-text-full");
+        const shortSpan = modeHeaderBtn.querySelector(".mode-text-short");
+        if (fullSpan) fullSpan.textContent = mode === "basic" ? "Standard" : "Scientific";
+        if (shortSpan) shortSpan.textContent = mode === "basic" ? "Std" : "Sci";
         modeHeaderBtn.title = mode === "basic" ? "Mode: Standard (Click to switch to Scientific)" : "Mode: Scientific (Click to switch to Standard)";
     }
 }

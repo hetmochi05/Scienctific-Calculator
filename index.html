@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Smart Calculator | Basic, Scientific, Age & Currency Calculator</title>
 
     <!-- Primary Meta Tags -->
@@ -17,7 +17,10 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/favicon/favicon.png">
 
-    <!-- Theme Color -->
+    <!-- Mobile Web App Capability -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#181a20">
     <meta name="robots" content="index, follow">
     <meta name="language" content="English">
@@ -48,7 +51,8 @@
                     <!-- Standard / Scientific Mode Switcher Pill -->
                     <button type="button" id="headerModeToggle" class="mode-pill-btn" aria-label="Toggle mode"
                         title="Switch between Standard and Scientific Mode">
-                        <span class="mode-text">Scientific</span>
+                        <span class="mode-text mode-text-full">Scientific</span>
+                        <span class="mode-text-short">Sci</span>
                         <i class="fa-solid fa-repeat"></i>
                     </button>
                 </div>
@@ -134,6 +138,20 @@
                         <div class="result" id="result">0</div>
 
                     </section>
+
+                    <!-- Mobile Scientific Sub-Tabs (portrait phone only) -->
+                    <div class="mobile-sci-tabs" role="tablist" aria-label="Mobile Keypad Views">
+                        <button type="button" class="mobile-sci-tab active" data-tab="all" role="tab"
+                            aria-selected="true">
+                            <span>All (10-Col)</span>
+                        </button>
+                        <button type="button" class="mobile-sci-tab" data-tab="basic" role="tab" aria-selected="false">
+                            <span>123 Number Pad</span>
+                        </button>
+                        <button type="button" class="mobile-sci-tab" data-tab="sci" role="tab" aria-selected="false">
+                            <span>fx Scientific</span>
+                        </button>
+                    </div>
 
                     <!-- Buttons -->
 
@@ -297,7 +315,7 @@
 
                     <label class="tool-label" for="currencyAmount">Amount</label>
                     <input type="number" id="currencyAmount" class="tool-input" value="1" min="0" step="any"
-                        placeholder="Enter amount">
+                        placeholder="Enter amount" inputmode="decimal" autocomplete="off">
 
                     <div class="currency-chips">
                         <span class="chips-label">Popular:</span>

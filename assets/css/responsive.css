@@ -1,15 +1,30 @@
 /* ==========================================================
    responsive.css
-   Responsive overrides for tablet, mobile, and landscape viewports.
-   Ensures the calculator, history drawer, and tools look and
-   feel great across all screen sizes.
+   Universal multi-device responsiveness for Smart Calculator Pro:
+   - Ultra-compact phones (320px–360px)
+   - Mainstream mobile portrait (360px–640px)
+   - Mobile landscape mode (height < 520px)
+   - Foldables & Tablets (641px–1024px)
+   - Height-constrained laptops & Chromebooks (height <= 720px)
+   - Safe-area notch insets & iOS zoom prevention
    ========================================================== */
 
-/* Tablet & Smaller Desktops */
-@media (max-width: 1024px) {
+/* ================= SAFE AREA INSETS (iPhone Notch & Dynamic Island) ================= */
+@supports (padding-top: env(safe-area-inset-top)) {
+    .window {
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        padding-left: env(safe-area-inset-left, 0px);
+        padding-right: env(safe-area-inset-right, 0px);
+    }
+}
+
+/* ================= TABLETS & SMALL LAPTOPS (861px - 1080px) ================= */
+@media (max-width: 1080px) and (min-width: 861px) {
     .window {
         width: 100vw;
         height: 100vh;
+        height: 100dvh;
         border-radius: 0;
         border: none;
     }
@@ -19,6 +34,7 @@
     }
 
     .calculator {
+        grid-template-columns: 260px 1fr;
         gap: 14px;
         padding: 14px;
     }
@@ -28,8 +44,8 @@
     }
 
     .buttons button {
-        font-size: 19px;
-        min-height: 44px;
+        font-size: 18px;
+        min-height: 42px;
         border-radius: 12px;
     }
 
@@ -42,11 +58,23 @@
     }
 }
 
-/* Tablet Portrait & Collapsible History Drawer */
+/* ================= TABLETS & FOLDABLES (641px - 860px) ================= */
 @media (max-width: 860px) {
+    .window {
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        border-radius: 0;
+        border: none;
+    }
+
+    body {
+        padding: 0;
+    }
+
     .calculator {
         grid-template-columns: 1fr;
-        padding: 12px;
+        padding: 12px 16px;
         gap: 12px;
     }
 
@@ -54,20 +82,24 @@
         display: flex !important;
     }
 
+    /* History drawer */
     .history {
         position: fixed;
         top: 0;
         left: 0;
         bottom: 0;
-        width: min(340px, 85vw);
+        width: min(350px, 86vw);
         height: 100vh;
+        height: 100dvh;
         z-index: 100;
         border-radius: 0 20px 20px 0;
-        box-shadow: 10px 0 40px rgba(0, 0, 0, 0.7);
+        box-shadow: 10px 0 40px rgba(0, 0, 0, 0.75);
         transform: translateX(-105%);
         transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         border: none;
         border-right: 1px solid rgba(255, 255, 255, 0.08);
+        padding-top: max(18px, env(safe-area-inset-top, 0px));
+        padding-bottom: max(18px, env(safe-area-inset-bottom, 0px));
     }
 
     .history.history-open {
@@ -81,27 +113,40 @@
     }
 
     .buttons {
-        gap: 6px;
+        gap: 8px;
     }
 
     .buttons button {
-        font-size: 16px;
-        min-height: 42px;
-        border-radius: 10px;
+        font-size: 18px;
+        min-height: 48px;
+        border-radius: 12px;
     }
 
     .calculator.mode-basic .buttons button {
         font-size: 26px !important;
-        min-height: 54px !important;
+        min-height: 56px !important;
         border-radius: 14px !important;
     }
 }
 
-/* Mobile Devices */
-@media (max-width: 600px) {
+/* ================= MOBILE PORTRAIT (<= 640px) ================= */
+@media (max-width: 640px) {
+    .window {
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        border-radius: 0;
+        border: none;
+    }
+
+    body {
+        padding: 0;
+    }
+
     .title-bar {
-        height: 54px;
+        height: 52px;
         padding: 0 10px;
+        gap: 6px;
     }
 
     .title-left {
@@ -110,38 +155,63 @@
     }
 
     .app-title {
-        display: none; /* Icon and mode pill are sufficient */
+        display: none; /* Hide 'Calculator' text to conserve space */
+    }
+
+    .mode-text-full {
+        display: none;
+    }
+
+    .mode-text-short {
+        display: inline; /* Show 'Sci' or 'Std' */
+        font-weight: 600;
     }
 
     .mode-pill-btn {
         padding: 4px 10px;
         font-size: 12px;
         margin-left: 2px;
+        gap: 5px;
     }
 
     .title-right {
-        gap: 4px;
+        gap: 3px;
     }
 
     .title-right button {
         width: 36px;
         height: 36px;
-        font-size: 17px;
+        font-size: 16px;
+        border-radius: 8px;
     }
 
     .calculator {
-        padding: 8px;
+        padding: 8px 10px max(8px, env(safe-area-inset-bottom, 0px));
         gap: 8px;
     }
 
     .right-panel {
-        gap: 10px;
+        gap: 8px;
     }
 
     .display {
-        padding: 12px 16px;
-        min-height: 110px;
+        padding: 12px 14px;
+        min-height: 105px;
         border-radius: 16px;
+    }
+
+    .display-status-bar {
+        margin-bottom: 4px;
+    }
+
+    .status-badge {
+        font-size: 10px;
+        padding: 2px 6px;
+    }
+
+    .copy-btn {
+        padding: 2px 8px;
+        font-size: 11px;
     }
 
     .expression {
@@ -153,13 +223,239 @@
         font-size: 44px;
     }
 
-    /* Scientific mode on mobile portrait: compact key grid */
+    /* Mobile sub-tab toggle bar: visible in scientific mode */
+    .mobile-sci-tabs {
+        display: flex !important;
+    }
+
+    /* Sub-tab view: 123 Number Pad */
+    .buttons.show-basic-pad .sci-only {
+        display: none !important;
+    }
+
+    .buttons.show-basic-pad {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 8px;
+    }
+
+    .buttons.show-basic-pad button {
+        min-height: 52px !important;
+        font-size: 24px !important;
+        border-radius: 14px !important;
+    }
+
+    /* Sub-tab view: fx Scientific Functions */
+    .buttons.show-sci-pad button:not(.sci-only) {
+        display: none !important;
+    }
+
+    .buttons.show-sci-pad {
+        grid-template-columns: repeat(6, 1fr) !important;
+        gap: 6px;
+    }
+
+    .buttons.show-sci-pad button {
+        min-height: 48px !important;
+        font-size: 15px !important;
+        border-radius: 10px !important;
+    }
+
+    /* Default (All 10-Col) in scientific mode on mobile */
     .buttons {
         gap: 4px;
     }
 
     .buttons button {
         min-height: 38px;
+        font-size: 12px;
+        border-radius: 8px;
+        padding: 2px;
+    }
+
+    .operator {
+        font-size: 18px !important;
+    }
+
+    /* Basic mode on mobile: full 4-column thumb-friendly layout */
+    .calculator.mode-basic .buttons {
+        gap: 8px;
+    }
+
+    .calculator.mode-basic .buttons button {
+        min-height: 54px !important;
+        font-size: 24px !important;
+        border-radius: 14px !important;
+    }
+
+    .calculator.mode-basic .operator {
+        font-size: 28px !important;
+    }
+
+    /* Tools screens */
+    .tool-content {
+        padding: 16px 10px;
+    }
+
+    .tool-card {
+        padding: 18px 14px;
+        border-radius: 16px;
+        max-width: 100%;
+    }
+
+    /* Enforce 16px font-size to prevent iOS Safari auto-zooming */
+    .tool-input,
+    .tool-select {
+        font-size: 16px !important;
+        padding: 12px 14px;
+    }
+
+    .currency-chips {
+        gap: 4px;
+    }
+
+    .currency-chip {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+
+    .age-breakdown {
+        font-size: 14px;
+    }
+}
+
+/* ================= ULTRA-COMPACT PHONES (<= 360px: iPhone SE 1st gen, Fold Cover) ================= */
+@media (max-width: 360px) {
+    .title-bar {
+        height: 48px;
+        padding: 0 6px;
+    }
+
+    .title-left {
+        gap: 4px;
+    }
+
+    .mode-pill-btn {
+        padding: 3px 6px;
+        font-size: 11px;
+    }
+
+    .title-right {
+        gap: 1px;
+    }
+
+    .title-right button {
+        width: 32px;
+        height: 32px;
+        font-size: 15px;
+    }
+
+    .display {
+        padding: 8px 10px;
+        min-height: 85px;
+    }
+
+    .result {
+        font-size: 34px;
+    }
+
+    .expression {
+        font-size: 15px;
+    }
+
+    .buttons button {
+        min-height: 34px;
+        font-size: 11px;
+    }
+
+    .mobile-sci-tab {
+        font-size: 10px;
+        padding: 6px 2px;
+    }
+}
+
+/* ================= MOBILE LANDSCAPE (height <= 520px and landscape) ================= */
+@media (orientation: landscape) and (max-height: 520px) {
+    .window {
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        border-radius: 0;
+        border: none;
+    }
+
+    body {
+        padding: 0;
+    }
+
+    .title-bar {
+        height: 38px;
+        padding: 0 max(16px, env(safe-area-inset-left, 0px));
+        padding-right: max(16px, env(safe-area-inset-right, 0px));
+    }
+
+    .title-left {
+        font-size: 14px;
+        gap: 8px;
+    }
+
+    .app-title {
+        display: inline;
+        font-size: 14px;
+    }
+
+    .mode-pill-btn {
+        padding: 2px 8px;
+        font-size: 11px;
+    }
+
+    .title-right button {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+
+    .calculator {
+        grid-template-columns: 1fr;
+        padding: 4px max(14px, env(safe-area-inset-left, 0px));
+        padding-right: max(14px, env(safe-area-inset-right, 0px));
+        gap: 4px;
+    }
+
+    .right-panel {
+        gap: 4px;
+    }
+
+    /* No need for mobile sub-tabs in landscape */
+    .mobile-sci-tabs {
+        display: none !important;
+    }
+
+    .display {
+        min-height: 62px;
+        padding: 6px 14px;
+        border-radius: 12px;
+    }
+
+    .display-status-bar {
+        margin-bottom: 2px;
+    }
+
+    .expression {
+        font-size: 14px;
+        min-height: 18px;
+    }
+
+    .result {
+        font-size: 30px;
+        line-height: 1;
+    }
+
+    .buttons {
+        gap: 5px;
+    }
+
+    .buttons button {
+        min-height: 28px;
         font-size: 13px;
         border-radius: 8px;
     }
@@ -168,56 +464,55 @@
         font-size: 18px !important;
     }
 
-    /* Basic mode on mobile portrait: big, spacious thumb-friendly keys */
     .calculator.mode-basic .buttons {
-        gap: 8px;
-    }
-
-    .calculator.mode-basic .buttons button {
-        min-height: 52px !important;
-        font-size: 22px !important;
-        border-radius: 14px !important;
-    }
-
-    .calculator.mode-basic .operator {
-        font-size: 26px !important;
-    }
-
-    .tool-content {
-        padding: 16px 10px;
-    }
-
-    .tool-card {
-        padding: 16px 14px;
-        border-radius: 16px;
-    }
-
-    .age-breakdown {
-        font-size: 14px;
-    }
-}
-
-/* Height-constrained landscape mobile screens */
-@media (max-height: 520px) {
-    .title-bar {
-        height: 44px;
-    }
-
-    .calculator {
-        padding: 6px;
         gap: 6px;
     }
 
+    .calculator.mode-basic .buttons button {
+        min-height: 36px !important;
+        font-size: 18px !important;
+    }
+
+    .tool-content {
+        padding: 10px 14px;
+    }
+
+    .tool-card {
+        padding: 12px 16px;
+        gap: 6px;
+    }
+}
+
+/* ================= HEIGHT-CONSTRAINED LAPTOPS (height <= 720px and width > 1024px) ================= */
+@media (max-height: 720px) and (min-width: 1025px) {
+    .title-bar {
+        height: 52px;
+    }
+
+    .calculator {
+        padding: 10px 18px;
+        gap: 12px;
+    }
+
     .display {
-        min-height: 80px;
-        padding: 8px 14px;
+        min-height: 110px;
+        padding: 12px 20px;
     }
 
     .result {
-        font-size: 36px;
+        font-size: 48px;
+    }
+
+    .expression {
+        font-size: 20px;
+    }
+
+    .buttons {
+        gap: 8px;
     }
 
     .buttons button {
-        min-height: 32px;
+        min-height: 38px;
+        font-size: 17px;
     }
 }

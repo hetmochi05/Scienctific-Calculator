@@ -47,18 +47,44 @@ function prettifyExpr(str) {
 function updateResultFontSize(text) {
     if (!resultEl) return;
     const len = text ? text.length : 1;
-    if (window.innerWidth < 640) {
-        if (len <= 8) resultEl.style.fontSize = '48px';
-        else if (len <= 12) resultEl.style.fontSize = '36px';
-        else if (len <= 16) resultEl.style.fontSize = '28px';
-        else resultEl.style.fontSize = '22px';
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const isLandscapeMobile = height <= 520 && width > height;
+    const isUltraSmall = width <= 360;
+    const isMobilePortrait = width <= 640 && !isLandscapeMobile;
+
+    if (isLandscapeMobile) {
+        if (len <= 8) resultEl.style.fontSize = '34px';
+        else if (len <= 14) resultEl.style.fontSize = '26px';
+        else if (len <= 20) resultEl.style.fontSize = '20px';
+        else resultEl.style.fontSize = '16px';
+    } else if (isUltraSmall) {
+        if (len <= 6) resultEl.style.fontSize = '36px';
+        else if (len <= 10) resultEl.style.fontSize = '28px';
+        else if (len <= 14) resultEl.style.fontSize = '22px';
+        else resultEl.style.fontSize = '17px';
+    } else if (isMobilePortrait) {
+        if (len <= 8) resultEl.style.fontSize = '44px';
+        else if (len <= 12) resultEl.style.fontSize = '34px';
+        else if (len <= 16) resultEl.style.fontSize = '26px';
+        else resultEl.style.fontSize = '20px';
     } else {
-        if (len <= 9) resultEl.style.fontSize = ''; // use CSS default
+        if (len <= 9) resultEl.style.fontSize = ''; // use CSS default (68px)
         else if (len <= 13) resultEl.style.fontSize = '54px';
         else if (len <= 18) resultEl.style.fontSize = '40px';
         else resultEl.style.fontSize = '30px';
     }
 }
+
+window.addEventListener('resize', () => {
+    if (resultEl) updateResultFontSize(resultEl.textContent);
+});
+
+window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+        if (resultEl) updateResultFontSize(resultEl.textContent);
+    }, 150);
+});
 
 function renderResult(rawStr) {
     const val = rawStr === '' ? '0' : prettifyExpr(rawStr);

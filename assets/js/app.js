@@ -112,6 +112,32 @@ if (copyResultBtn) {
     copyResultBtn.addEventListener('click', copyResultToClipboard);
 }
 
+// Mobile Scientific Sub-Tabs
+const mobileSciTabs = document.querySelectorAll('.mobile-sci-tab');
+const buttonsPanel = document.querySelector('.buttons');
+
+mobileSciTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        playClick();
+        const targetTab = tab.getAttribute('data-tab');
+        mobileSciTabs.forEach(t => {
+            t.classList.remove('active');
+            t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+
+        if (buttonsPanel) {
+            buttonsPanel.classList.remove('show-basic-pad', 'show-sci-pad');
+            if (targetTab === 'basic') {
+                buttonsPanel.classList.add('show-basic-pad');
+            } else if (targetTab === 'sci') {
+                buttonsPanel.classList.add('show-sci-pad');
+            }
+        }
+    });
+});
+
 // ---------- Initialization ----------
 setCalculatorMode(currentMode);
 updateSoundButtonUI();
