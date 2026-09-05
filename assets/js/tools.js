@@ -57,10 +57,15 @@ function todayISO() {
 
 if (ageAsOfDateEl) ageAsOfDateEl.value = todayISO();
 
-// Leap-year safe month addition with day clamping
-function addMonths(date, m) {
+// Leap-year safe month addition with day clamping. `preferredDay` lets
+// callers always anchor to the ORIGINAL birth day-of-month (e.g. 29 for a
+// Feb 29 birthday) instead of drifting: without this, chaining addMonths
+// off an already-clamped intermediate date (e.g. Feb 28, because some year
+// in between wasn't a leap year) would permanently "forget" the real
+// target day and could throw off later month/year boundaries.
+function addMonths(date, m, preferredDay) {
     const d = new Date(date.getTime());
-    const targetDay = d.getDate();
+    const targetDay = preferredDay !== undefined ? preferredDay : d.getDate();
     d.setDate(1);
     d.setMonth(d.getMonth() + m);
     const daysInTargetMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
@@ -75,18 +80,19 @@ function addYears(date, y) {
 function calculatePreciseAge(birth, asOf) {
     if (birth > asOf) return null;
 
+    const originalDay = birth.getDate();
+
     let years = asOf.getFullYear() - birth.getFullYear();
-    if (addYears(birth, years) > asOf) {
+    if (addMonths(birth, years * 12, originalDay) > asOf) {
         years--;
     }
 
-    const birthWithYears = addYears(birth, years);
     let months = 0;
-    while (months < 12 && addMonths(birthWithYears, months + 1) <= asOf) {
+    while (months < 12 && addMonths(birth, years * 12 + months + 1, originalDay) <= asOf) {
         months++;
     }
 
-    const birthWithMonths = addMonths(birthWithYears, months);
+    const birthWithMonths = addMonths(birth, years * 12 + months, originalDay);
     const msPerDay = 24 * 60 * 60 * 1000;
     const days = Math.round((asOf - birthWithMonths) / msPerDay);
 

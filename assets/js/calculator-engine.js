@@ -29,7 +29,11 @@ function roundPrecision(num, digits = 12) {
 }
 
 // Calculate a flat expression (no parentheses) without eval().
-// Handles unary minus, then ^ / # (power / y-th root), then * /, then + -.
+// Handles ^ / # (power / y-th root) first — including a signed exponent
+// like "2^-3" — then folds remaining unary minus signs, then * /, then + -.
+// Unary minus is resolved AFTER power/root so that "-2^2" correctly means
+// "-(2^2)" = -4, matching standard math convention (and JS itself, which
+// refuses to parse "-2**2" for the same reason).
 function calculateExpression(expression) {
     // Match numbers (including scientific notation like 1e-5 or 3.2e+4) and operators
     const tokenRegex = /(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?|[+\-*/^#]/g;
@@ -38,35 +42,55 @@ function calculateExpression(expression) {
 
     tokens = tokens.map(token => isNaN(token) ? token : Number(token));
 
-    // Fix unary minus (e.g. "-5+3" or "3*-5")
-    for (let i = 0; i < tokens.length; i++) {
-        if (
-            tokens[i] === "-" &&
-            (i === 0 || CALC_OPERATORS.includes(tokens[i - 1]))
-        ) {
-            tokens[i + 1] = -Number(tokens[i + 1]);
-            tokens.splice(i, 1);
-            i--;
+    // A malformed/orphaned operator (no valid left operand, e.g. leading
+    // "*5" from mismatched parentheses like ")5(") must never be able to
+    // reach splice(i-1, ...) with a negative index — that previously caused
+    // an infinite loop. Bail out cleanly instead.
+    const hasValidOperandBefore = (i) => i > 0 && typeof tokens[i - 1] === "number";
+
+    // ^ (power) and # (y-th root: a#b = a^(1/b)) — higher precedence than * /.
+    // Resolves a signed exponent inline (e.g. "2^-3") without touching the
+    // base's own sign, which is handled afterward. Scanned right-to-left so
+    // chained operators are right-associative (2^3^2 = 2^(3^2) = 512, the
+    // standard math/most-calculators convention), not left-associative.
+    for (let i = tokens.length - 1; i >= 0; i--) {
+        if (tokens[i] === "^" || tokens[i] === "#") {
+            if (!hasValidOperandBefore(i)) return "Error";
+
+            let span = 3; // operator, base, exponent
+            let exponent = tokens[i + 1];
+            if (exponent === "-") {
+                exponent = -Number(tokens[i + 2]);
+                span = 4;
+            }
+            if (typeof exponent !== "number" || isNaN(exponent)) return "Error";
+
+            const base = tokens[i - 1];
+            let result;
+            if (tokens[i] === "^") {
+                result = Math.pow(base, exponent);
+            } else if (base < 0 && exponent % 2 !== 0 && Math.floor(exponent) === exponent) {
+                // Odd roots of negative numbers: e.g. (-8)#3 = -2
+                result = -Math.pow(-base, 1 / exponent);
+            } else {
+                result = Math.pow(base, 1 / exponent);
+            }
+            tokens.splice(i - 1, span, result);
         }
     }
 
-    // ^ (power) and # (y-th root: a#b = a^(1/b)) — higher precedence than * /
+    // Fold unary minus now that power/root no longer needs the raw sign
+    // (e.g. "-5+3" or "3*-5"). Any "-" still lacking a right-hand number
+    // (e.g. trailing "-" from a malformed expression) is left for the
+    // final loop below, which safely ignores incomplete operators.
     for (let i = 0; i < tokens.length; i++) {
-        if (tokens[i] === "^") {
-            let result = Math.pow(tokens[i - 1], tokens[i + 1]);
-            tokens.splice(i - 1, 3, result);
-            i--;
-        } else if (tokens[i] === "#") {
-            const base = tokens[i - 1];
-            const root = tokens[i + 1];
-            let result;
-            // Handle odd roots of negative numbers: e.g. (-8)#3 = -2
-            if (base < 0 && root % 2 !== 0 && Math.floor(root) === root) {
-                result = -Math.pow(-base, 1 / root);
-            } else {
-                result = Math.pow(base, 1 / root);
-            }
-            tokens.splice(i - 1, 3, result);
+        if (
+            tokens[i] === "-" &&
+            (i === 0 || CALC_OPERATORS.includes(tokens[i - 1])) &&
+            typeof tokens[i + 1] === "number"
+        ) {
+            tokens[i + 1] = -tokens[i + 1];
+            tokens.splice(i, 1);
             i--;
         }
     }
@@ -74,6 +98,7 @@ function calculateExpression(expression) {
     // * and /
     for (let i = 0; i < tokens.length; i++) {
         if (tokens[i] === "*" || tokens[i] === "/") {
+            if (!hasValidOperandBefore(i) || typeof tokens[i + 1] !== "number") return "Error";
             if (tokens[i] === "/" && tokens[i + 1] === 0) return "Error";
             let result = tokens[i] === "*" ? tokens[i - 1] * tokens[i + 1] : tokens[i - 1] / tokens[i + 1];
             tokens.splice(i - 1, 3, result);
@@ -81,11 +106,16 @@ function calculateExpression(expression) {
         }
     }
 
-    // + and -
+    // + and - (any stray non-numeric/operator tokens are ignored rather
+    // than crashing, since malformed input is possible via free-typed
+    // parentheses)
+    if (typeof tokens[0] !== "number") return "Error";
     let result = tokens[0];
     for (let i = 1; i < tokens.length; i += 2) {
+        if (typeof tokens[i + 1] !== "number") break;
         if (tokens[i] === "+") result += tokens[i + 1];
         else if (tokens[i] === "-") result -= tokens[i + 1];
+        else break;
     }
 
     return roundPrecision(result);

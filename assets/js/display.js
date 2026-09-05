@@ -197,7 +197,8 @@ function openHistoryDrawer() {
         backdrop.id = 'historyBackdrop';
         backdrop.className = 'history-backdrop';
         backdrop.addEventListener('click', closeHistoryDrawer);
-        document.body.appendChild(backdrop);
+        const windowEl = document.querySelector('.window') || document.body;
+        windowEl.appendChild(backdrop);
     }
     backdrop.classList.add('visible');
 }

@@ -62,7 +62,7 @@ button, input, select {
 }
 
 .window:hover {
-    transform: translateY(-2px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .7);
 }
 
 .title-bar {

@@ -123,6 +123,16 @@ function appendValue(value) {
         return;
     }
 
+    // Prevent a ")" with no matching unclosed "(" before it
+    if (value === ")") {
+        const openCount = (currentValue.match(/\(/g) || []).length;
+        const closeCount = (currentValue.match(/\)/g) || []).length;
+        if (currentValue === "0" || openCount <= closeCount) {
+            renderResult(currentValue);
+            return;
+        }
+    }
+
     if (CALC_OPERATORS.includes(value)) {
         if (currentValue === "0" && value === "-") {
             currentValue = "-";
