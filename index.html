@@ -65,12 +65,8 @@
                         aria-label="Toggle history drawer" title="Calculation History">
                         <i class="fa-regular fa-clock"></i>
                     </button>
-                    <button type="button" id="openCurrencyScreen" aria-label="Currency converter"
-                        title="Currency Converter">
-                        <i class="fa-solid fa-money-bill-transfer"></i>
-                    </button>
-                    <button type="button" id="openAgeScreen" aria-label="Age calculator" title="Age Calculator">
-                        <i class="fa-solid fa-cake-candles"></i>
+                    <button type="button" id="openHubBtn" aria-label="All calculator modes" title="All Modes">
+                        <i class="fa-solid fa-grip"></i>
                     </button>
                 </div>
 
@@ -246,7 +242,7 @@
                     <span>Age Calculator</span>
                 </div>
                 <div class="title-right">
-                    <button type="button" data-back aria-label="Back to calculator" title="Back to Calculator">
+                        <button type="button" data-back="hubScreen" aria-label="Back to menu" title="Back to All Modes">
                         <i class="fa-solid fa-arrow-left"></i>
                     </button>
                 </div>
@@ -357,6 +353,201 @@
                         <div class="tool-result-sub" id="currencyResultSub"></div>
                     </div>
 
+                </div>
+            </main>
+
+                </div>
+
+        <!-- ================= HUB (ALL MODES) SCREEN ================= -->
+
+        <div id="hubScreen" class="screen tool-screen">
+
+            <header class="title-bar">
+                <div class="title-left">
+                    <i class="fa-solid fa-grip app-icon"></i>
+                    <span>All Modes</span>
+                </div>
+                <div class="title-right">
+                    <button type="button" data-back="calcScreen" aria-label="Back to calculator"
+                        title="Back to Calculator">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </header>
+
+            <main class="tool-content hub-content">
+                <div class="hub-card">
+
+                    <div class="hub-section">
+                        <h3 class="hub-section-title">Calculator Modes</h3>
+                        <div class="hub-list">
+                            <button type="button" class="hub-item" data-target="calcScreen" data-set-mode="basic">
+                                <i class="fa-solid fa-calculator hub-item-icon"></i>
+                                <span class="hub-item-label">Standard</span>
+                                <i class="fa-solid fa-chevron-right hub-item-chevron"></i>
+                            </button>
+                            <button type="button" class="hub-item" data-target="calcScreen"
+                                data-set-mode="scientific">
+                                <i class="fa-solid fa-square-root-variable hub-item-icon"></i>
+                                <span class="hub-item-label">Scientific</span>
+                                <i class="fa-solid fa-chevron-right hub-item-chevron"></i>
+                            </button>
+                            <button type="button" class="hub-item" data-coming-soon="Graphing"
+                                data-coming-icon="fa-solid fa-chart-line">
+                                <i class="fa-solid fa-chart-line hub-item-icon"></i>
+                                <span class="hub-item-label">Graphing</span>
+                                <span class="hub-item-badge">Soon</span>
+                                <i class="fa-solid fa-chevron-right hub-item-chevron"></i>
+                            </button>
+                            <button type="button" class="hub-item" data-coming-soon="Programmer"
+                                data-coming-icon="fa-solid fa-code">
+                                <i class="fa-solid fa-code hub-item-icon"></i>
+                                <span class="hub-item-label">Programmer</span>
+                                <span class="hub-item-badge">Soon</span>
+                                <i class="fa-solid fa-chevron-right hub-item-chevron"></i>
+                            </button>
+                            <button type="button" class="hub-item" data-target="ageScreen">
+                                <i class="fa-solid fa-calendar-days hub-item-icon"></i>
+                                <span class="hub-item-label">Date Calculation</span>
+                                <i class="fa-solid fa-chevron-right hub-item-chevron"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="hub-section">
+                        <h3 class="hub-section-title">Converter</h3>
+                        <div class="hub-list">
+                            <button type="button" class="hub-item" data-target="currencyScreen">
+                                <i class="fa-solid fa-money-bill-transfer hub-item-icon"></i>
+                                <span class="hub-item-label">Currency</span>
+                                <i class="fa-solid fa-chevron-right hub-item-chevron"></i>
+                            </button>
+                            <button type="button" class="hub-item" data-coming-soon="Volume"
+                                data-coming-icon="fa-solid fa-flask">
+                                <i class="fa-solid fa-flask hub-item-icon"></i>
+                                <span class="hub-item-label">Volume</span>
+                                <span class="hub-item-badge">Soon</span>
+                                <i class="fa-solid fa-chevron-right hub-item-chevron"></i>
+                            </button>
+                            <button type="button" class="hub-item" data-coming-soon="Length"
+                                data-coming-icon="fa-solid fa-ruler">
+                                <i class="fa-solid fa-ruler hub-item-icon"></i>
+                                <span class="hub-item-label">Length</span>
+                                <span class="hub-item-badge">Soon</span>
+                                <i class="fa-solid fa-chevron-right hub-item-chevron"></i>
+                            </button>
+                            <button type="button" class="hub-item" data-coming-soon="Weight and Mass"
+                                data-coming-icon="fa-solid fa-weight-hanging">
+                                <i class="fa-solid fa-weight-hanging hub-item-icon"></i>
+                                <span class="hub-item-label">Weight and Mass</span>
+                                <span class="hub-item-badge">Soon</span>
+                                <i class="fa-solid fa-chevron-right hub-item-chevron"></i>
+                            </button>
+                            <button type="button" class="hub-item" data-coming-soon="Temperature"
+                                data-coming-icon="fa-solid fa-temperature-half">
+                                <i class="fa-solid fa-temperature-half hub-item-icon"></i>
+                                <span class="hub-item-label">Temperature</span>
+                                <span class="hub-item-badge">Soon</span>
+                                <i class="fa-solid fa-chevron-right hub-item-chevron"></i>
+                            </button>
+                            <button type="button" class="hub-item" data-coming-soon="Energy"
+                                data-coming-icon="fa-solid fa-bolt">
+                                <i class="fa-solid fa-bolt hub-item-icon"></i>
+                                <span class="hub-item-label">Energy</span>
+                                <span class="hub-item-badge">Soon</span>
+                                <i class="fa-solid fa-chevron-right hub-item-chevron"></i>
+                            </button>
+                            <button type="button" class="hub-item" data-coming-soon="Area"
+                                data-coming-icon="fa-solid fa-vector-square">
+                                <i class="fa-solid fa-vector-square hub-item-icon"></i>
+                                <span class="hub-item-label">Area</span>
+                                <span class="hub-item-badge">Soon</span>
+                                <i class="fa-solid fa-chevron-right hub-item-chevron"></i>
+                            </button>
+                            <button type="button" class="hub-item" data-coming-soon="Speed"
+                                data-coming-icon="fa-solid fa-gauge-high">
+                                <i class="fa-solid fa-gauge-high hub-item-icon"></i>
+                                <span class="hub-item-label">Speed</span>
+                                <span class="hub-item-badge">Soon</span>
+                                <i class="fa-solid fa-chevron-right hub-item-chevron"></i>
+                            </button>
+                            <button type="button" class="hub-item" data-coming-soon="Time"
+                                data-coming-icon="fa-solid fa-stopwatch">
+                                <i class="fa-solid fa-stopwatch hub-item-icon"></i>
+                                <span class="hub-item-label">Time</span>
+                                <span class="hub-item-badge">Soon</span>
+                                <i class="fa-solid fa-chevron-right hub-item-chevron"></i>
+                            </button>
+                            <button type="button" class="hub-item" data-coming-soon="Power"
+                                data-coming-icon="fa-solid fa-plug">
+                                <i class="fa-solid fa-plug hub-item-icon"></i>
+                                <span class="hub-item-label">Power</span>
+                                <span class="hub-item-badge">Soon</span>
+                                <i class="fa-solid fa-chevron-right hub-item-chevron"></i>
+                            </button>
+                            <button type="button" class="hub-item" data-coming-soon="Data"
+                                data-coming-icon="fa-solid fa-database">
+                                <i class="fa-solid fa-database hub-item-icon"></i>
+                                <span class="hub-item-label">Data</span>
+                                <span class="hub-item-badge">Soon</span>
+                                <i class="fa-solid fa-chevron-right hub-item-chevron"></i>
+                            </button>
+                            <button type="button" class="hub-item" data-coming-soon="Pressure"
+                                data-coming-icon="fa-solid fa-gauge">
+                                <i class="fa-solid fa-gauge hub-item-icon"></i>
+                                <span class="hub-item-label">Pressure</span>
+                                <span class="hub-item-badge">Soon</span>
+                                <i class="fa-solid fa-chevron-right hub-item-chevron"></i>
+                            </button>
+                            <button type="button" class="hub-item" data-coming-soon="Angle"
+                                data-coming-icon="fa-solid fa-angle-right">
+                                <i class="fa-solid fa-angle-right hub-item-icon"></i>
+                                <span class="hub-item-label">Angle</span>
+                                <span class="hub-item-badge">Soon</span>
+                                <i class="fa-solid fa-chevron-right hub-item-chevron"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="hub-section">
+                        <h3 class="hub-section-title">Other</h3>
+                        <div class="hub-list">
+                            <button type="button" class="hub-item" data-coming-soon="Settings"
+                                data-coming-icon="fa-solid fa-gear">
+                                <i class="fa-solid fa-gear hub-item-icon"></i>
+                                <span class="hub-item-label">Settings</span>
+                                <span class="hub-item-badge">Soon</span>
+                                <i class="fa-solid fa-chevron-right hub-item-chevron"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+
+        </div>
+
+        <!-- ================= COMING SOON (placeholder) SCREEN ================= -->
+
+        <div id="comingSoonScreen" class="screen tool-screen">
+
+            <header class="title-bar">
+                <div class="title-left">
+                    <i id="comingSoonIcon" class="fa-solid fa-hourglass-half app-icon"></i>
+                    <span id="comingSoonTitle">Coming Soon</span>
+                </div>
+                <div class="title-right">
+                    <button type="button" data-back="hubScreen" aria-label="Back to all modes" title="Back to All Modes">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                </div>
+            </header>
+
+            <main class="tool-content">
+                <div class="tool-card coming-soon-card">
+                    <i id="comingSoonBigIcon" class="fa-solid fa-hourglass-half coming-soon-big-icon"></i>
+                    <h2 id="comingSoonHeading">Coming Soon</h2>
+                    <p id="comingSoonMessage">This mode is on the roadmap and will be added in a future update.</p>
                 </div>
             </main>
 

@@ -9,7 +9,6 @@ A modern, highly accurate, and responsive multi-function web calculator built wi
 
 Try the live application directly in your browser.
 
-
 ## ✨ Features
 
 ### 🧮 Standard (Basic) Calculator

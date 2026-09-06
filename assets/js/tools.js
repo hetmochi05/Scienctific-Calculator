@@ -16,15 +16,48 @@ function showScreen(id) {
     }
 }
 
-const openCurrencyBtn = document.getElementById('openCurrencyScreen');
-const openAgeBtn = document.getElementById('openAgeScreen');
+const openHubBtn = document.getElementById('openHubBtn');
+if (openHubBtn) openHubBtn.addEventListener('click', () => showScreen('hubScreen'));
 
-if (openCurrencyBtn) openCurrencyBtn.addEventListener('click', () => showScreen('currencyScreen'));
-if (openAgeBtn) openAgeBtn.addEventListener('click', () => showScreen('ageScreen'));
-
+// Back buttons each declare their own target via data-back="screenId"
+// (defaults to calcScreen if omitted, for backward compatibility).
 document.querySelectorAll('[data-back]').forEach(btn => {
-    btn.addEventListener('click', () => showScreen('calcScreen'));
+    btn.addEventListener('click', () => showScreen(btn.getAttribute('data-back') || 'calcScreen'));
 });
+
+// Hub (mode picker) item clicks: either jump straight to a built screen
+// (optionally setting the calculator mode first), or open the reusable
+// "Coming Soon" placeholder for modes still on the roadmap.
+document.querySelectorAll('.hub-item').forEach(item => {
+    item.addEventListener('click', () => {
+        const target = item.getAttribute('data-target');
+        const mode = item.getAttribute('data-set-mode');
+        const comingSoonName = item.getAttribute('data-coming-soon');
+
+        if (target) {
+            if (mode) setCalculatorMode(mode);
+            showScreen(target);
+        } else if (comingSoonName) {
+            openComingSoon(comingSoonName, item.getAttribute('data-coming-icon') || 'fa-solid fa-hourglass-half');
+        }
+    });
+});
+
+function openComingSoon(name, iconClass) {
+    const titleEl = document.getElementById('comingSoonTitle');
+    const headingEl = document.getElementById('comingSoonHeading');
+    const messageEl = document.getElementById('comingSoonMessage');
+    const iconEl = document.getElementById('comingSoonIcon');
+    const bigIconEl = document.getElementById('comingSoonBigIcon');
+
+    if (titleEl) titleEl.textContent = name;
+    if (headingEl) headingEl.textContent = `${name} — Coming Soon`;
+    if (messageEl) messageEl.textContent = `${name} mode is on the roadmap and will be added in a future update.`;
+    if (iconEl) iconEl.className = `${iconClass} app-icon`;
+    if (bigIconEl) bigIconEl.className = `${iconClass} coming-soon-big-icon`;
+
+    showScreen('comingSoonScreen');
+}
 
 // ================= Age Calculator =================
 
