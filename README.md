@@ -3,6 +3,12 @@
 A modern, highly accurate, and responsive multi-function web calculator built with vanilla HTML5, CSS3, and JavaScript. Featuring Standard & Scientific calculation modes, an Age Calculator with leap-year precision, and a Currency Converter with real-time exchange rates and offline caching.
 
 ---
+## Live Demo
+
+🚀 [Smart Calculator — Live Demo](https://hetmochi05.github.io/Smart-Calculator/)
+
+Try the live application directly in your browser.
+
 
 ## ✨ Features
 
