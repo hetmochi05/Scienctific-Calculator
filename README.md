@@ -5,7 +5,7 @@ A modern, highly accurate, and responsive multi-function web calculator built wi
 ---
 ## Live Demo
 
-🚀 [Smart Calculator — Live Demo](https://hetmochi05.github.io/Smart-Calculator/)
+🚀 <a href="https://hetmochi05.github.io/Smart-Calculator/" target="_blank">Smart Calculator — Live Demo</a>
 
 Try the live application directly in your browser.
 
